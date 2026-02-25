@@ -1,0 +1,41 @@
+C:\Users\aalex\Desktop\C#\Digital Shop Software\bin\Debug\net6.0-windows\Digital Shop Software.exe
+C:\Users\aalex\Desktop\C#\Digital Shop Software\bin\Debug\net6.0-windows\Digital Shop Software.deps.json
+C:\Users\aalex\Desktop\C#\Digital Shop Software\bin\Debug\net6.0-windows\Digital Shop Software.runtimeconfig.json
+C:\Users\aalex\Desktop\C#\Digital Shop Software\bin\Debug\net6.0-windows\Digital Shop Software.dll
+C:\Users\aalex\Desktop\C#\Digital Shop Software\bin\Debug\net6.0-windows\Digital Shop Software.pdb
+C:\Users\aalex\Desktop\C#\Digital Shop Software\obj\Debug\net6.0-windows\Digital Shop Software.csproj.AssemblyReference.cache
+C:\Users\aalex\Desktop\C#\Digital Shop Software\obj\Debug\net6.0-windows\Digital Shop Software.csproj.GenerateResource.cache
+C:\Users\aalex\Desktop\C#\Digital Shop Software\obj\Debug\net6.0-windows\Digital Shop Software.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\aalex\Desktop\C#\Digital Shop Software\obj\Debug\net6.0-windows\Digital Shop Software.AssemblyInfoInputs.cache
+C:\Users\aalex\Desktop\C#\Digital Shop Software\obj\Debug\net6.0-windows\Digital Shop Software.AssemblyInfo.cs
+C:\Users\aalex\Desktop\C#\Digital Shop Software\obj\Debug\net6.0-windows\Digital Shop Software.csproj.CoreCompileInputs.cache
+C:\Users\aalex\Desktop\C#\Digital Shop Software\obj\Debug\net6.0-windows\Digital Shop Software.dll
+C:\Users\aalex\Desktop\C#\Digital Shop Software\obj\Debug\net6.0-windows\refint\Digital Shop Software.dll
+C:\Users\aalex\Desktop\C#\Digital Shop Software\obj\Debug\net6.0-windows\Digital Shop Software.pdb
+C:\Users\aalex\Desktop\C#\Digital Shop Software\obj\Debug\net6.0-windows\Digital Shop Software.genruntimeconfig.cache
+C:\Users\aalex\Desktop\C#\Digital Shop Software\obj\Debug\net6.0-windows\ref\Digital Shop Software.dll
+C:\Users\aalex\Desktop\C#\Digital Shop Software\obj\Debug\net6.0-windows\Digital_Shop_Software.Login.resources
+C:\Users\aalex\Desktop\C#\Digital Shop Software\bin\Debug\net6.0-windows\en-GB\Digital Shop Software.resources.dll
+C:\Users\aalex\Desktop\C#\Digital Shop Software\obj\Debug\net6.0-windows\Digital_Shop_Software.Login.en-GB.resources
+C:\Users\aalex\Desktop\C#\Digital Shop Software\obj\Debug\net6.0-windows\en-GB\Digital Shop Software.resources.dll
+C:\Users\aalex\Desktop\C#\Digital Shop Software\obj\Debug\net6.0-windows\Digital_Shop_Software.Properties.Resources.resources
+C:\Users\aalex\Desktop\C#\Digital Shop Software\obj\Debug\net6.0-windows\Digital_Shop_Software.MainMenu.resources
+C:\Users\aalex\Desktop\C#\Digital Shop Software\obj\Debug\net6.0-windows\Digital_Shop_Software.ResetPassword.resources
+C:\Users\aalex\Desktop\C#\Digital Shop Software\obj\Debug\net6.0-windows\Digital_Shop_Software.Stock.resources
+C:\Users\aalex\Desktop\C#\Digital Shop Software\obj\Debug\net6.0-windows\Digital_Shop_Software.Suppliers.resources
+C:\Users\aalex\Desktop\C#\Digital Shop Software\obj\Debug\net6.0-windows\Digital_Shop_Software.Customers.resources
+C:\Users\aalex\Desktop\C#\Digital Shop Software\obj\Debug\net6.0-windows\Digital_Shop_Software.Orders.resources
+C:\Users\aalex\Desktop\C#\Digital Shop Software\obj\Debug\net6.0-windows\Digital_Shop_Software.Reports.resources
+C:\Users\aalex\Desktop\C#\Digital Shop Software\obj\Debug\net6.0-windows\Digital_Shop_Software.Users.resources
+C:\Users\aalex\Desktop\C#\Digital Shop Software\bin\Debug\net6.0-windows\System.Data.SQLite.dll
+C:\Users\aalex\Desktop\C#\Digital Shop Software\bin\Debug\net6.0-windows\runtimes\linux-x64\native\SQLite.Interop.dll
+C:\Users\aalex\Desktop\C#\Digital Shop Software\bin\Debug\net6.0-windows\runtimes\osx-x64\native\SQLite.Interop.dll
+C:\Users\aalex\Desktop\C#\Digital Shop Software\bin\Debug\net6.0-windows\runtimes\win-x64\native\SQLite.Interop.dll
+C:\Users\aalex\Desktop\C#\Digital Shop Software\bin\Debug\net6.0-windows\runtimes\win-x86\native\SQLite.Interop.dll
+C:\Users\aalex\Desktop\C#\Digital Shop Software\obj\Debug\net6.0-windows\Digital_Shop_Software.AddStock.resources
+C:\Users\aalex\Desktop\C#\Digital Shop Software\obj\Debug\net6.0-windows\Digital_Shop_Software.AddSupplier.resources
+C:\Users\aalex\Desktop\C#\Digital Shop Software\obj\Debug\net6.0-windows\Digital_Shop_Software.AddCustomer.resources
+C:\Users\aalex\Desktop\C#\Digital Shop Software\obj\Debug\net6.0-windows\Digital_Shop_Software.AddUser.resources
+C:\Users\aalex\Desktop\C#\Digital Shop Software\obj\Debug\net6.0-windows\Digital_Shop_Software.AddClientOrder.resources
+C:\Users\aalex\Desktop\C#\Digital Shop Software\obj\Debug\net6.0-windows\Digital_Shop_Software.AddPurchaseOrder.resources
+C:\Users\aalex\Desktop\C#\Digital Shop Software\obj\Debug\net6.0-windows\Digital .55FC9C3E.Up2Date

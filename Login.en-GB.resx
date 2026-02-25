@@ -1,0 +1,278 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!--
+    Microsoft ResX Schema 
+
+    Version 2.0
+
+    The primary goals of this format is to allow a simple XML format
+    that is mostly human readable. The generation and parsing of the
+    various data types are done through the TypeConverter classes
+    associated with the data types.
+
+    Example:
+
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing"">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+
+    There are any number of "resheader" rows that contain simple
+    name/value pairs.
+
+    Each data row contains a name, and value. The row also contains a
+    type or mimetype. Type corresponds to a .NET class that support
+    text/value conversion through the TypeConverter architecture.
+    Classes that don't support this are serialized and stored with the
+    mimetype set.
+
+    The mimetype is used for serialized objects, and tells the
+    ResXResourceReader how to depersist the object. This is currently not
+    extensible. For a given mimetype the value must be set accordingly:
+
+    Note - application/x-microsoft.net.object.binary.base64 is the format
+    that the ResXResourceWriter will generate, however the reader can
+    read any of the formats listed below.
+
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
+  <data name="Username.Font" type="System.Drawing.Font, System.Drawing">
+    <value>Bahnschrift SemiBold, 10pt, style=Bold</value>
+  </data>
+  <data name="Username.Location" type="System.Drawing.Point, System.Drawing">
+    <value>222, 116</value>
+  </data>
+  <data name="Username.Size" type="System.Drawing.Size, System.Drawing">
+    <value>180, 32</value>
+  </data>
+  <data name="Password.Font" type="System.Drawing.Font, System.Drawing">
+    <value>Segoe UI, 10pt</value>
+  </data>
+  <data name="Password.Location" type="System.Drawing.Point, System.Drawing">
+    <value>222, 181</value>
+  </data>
+  <data name="Password.Size" type="System.Drawing.Size, System.Drawing">
+    <value>180, 34</value>
+  </data>
+  <assembly alias="mscorlib" name="mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
+  <data name="U_Name_txt.AutoSize" type="System.Boolean, mscorlib">
+    <value>True</value>
+  </data>
+  <data name="U_Name_txt.Font" type="System.Drawing.Font, System.Drawing">
+    <value>Bahnschrift, 9pt, style=Bold</value>
+  </data>
+  <data name="U_Name_txt.Size" type="System.Drawing.Size, System.Drawing">
+    <value>94, 22</value>
+  </data>
+  <data name="U_Name_txt.Text" xml:space="preserve">
+    <value>Username</value>
+  </data>
+  <data name="Password_txt.AutoSize" type="System.Boolean, mscorlib">
+    <value>True</value>
+  </data>
+  <data name="Password_txt.Font" type="System.Drawing.Font, System.Drawing">
+    <value>Bahnschrift, 9pt, style=Bold</value>
+  </data>
+  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
+  <data name="Password_txt.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
+    <value>NoControl</value>
+  </data>
+  <data name="Password_txt.Size" type="System.Drawing.Size, System.Drawing">
+    <value>91, 22</value>
+  </data>
+  <data name="Password_txt.Text" xml:space="preserve">
+    <value>Password</value>
+  </data>
+  <data name="ResetPass.Font" type="System.Drawing.Font, System.Drawing">
+    <value>Bahnschrift, 6pt, style=Bold</value>
+  </data>
+  <data name="ResetPass.Size" type="System.Drawing.Size, System.Drawing">
+    <value>112, 24</value>
+  </data>
+  <data name="ResetPass.Text" xml:space="preserve">
+    <value>Forgot Password?</value>
+  </data>
+  <data name="LoginButton.Font" type="System.Drawing.Font, System.Drawing">
+    <value>Segoe UI, 9pt, style=Bold</value>
+  </data>
+  <data name="LoginButton.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
+    <value>NoControl</value>
+  </data>
+  <data name="LoginButton.Location" type="System.Drawing.Point, System.Drawing">
+    <value>201, 264</value>
+  </data>
+  <data name="LoginButton.Size" type="System.Drawing.Size, System.Drawing">
+    <value>112, 34</value>
+  </data>
+  <data name="LoginButton.Text" xml:space="preserve">
+    <value>Login</value>
+  </data>
+  <data name="QuitButton.Font" type="System.Drawing.Font, System.Drawing">
+    <value>Segoe UI, 9pt, style=Bold</value>
+  </data>
+  <data name="QuitButton.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
+    <value>NoControl</value>
+  </data>
+  <data name="QuitButton.Location" type="System.Drawing.Point, System.Drawing">
+    <value>319, 264</value>
+  </data>
+  <data name="QuitButton.Size" type="System.Drawing.Size, System.Drawing">
+    <value>112, 34</value>
+  </data>
+  <data name="QuitButton.Text" xml:space="preserve">
+    <value>Quit</value>
+  </data>
+  <data name="ShowPass.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+    <value>
+        iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAABGdBTUEAALGPC/xhBQAAAAlwSFlzAAAL
+        DAAACwwBP0AiyAAAAZ9JREFUSEvtVMtKA0EQzEkU9eDr5kFB/Q0fd/UXRD9CfEBAM7MJ6r/Ex92DkszG
+        IBE0R/US9awf0Fb3NpGdWZK9CDmkoGB3qrp2Hj1bGGKwQbXiNDmzR85eUWzaFNufhHjmMVfaZY/a84Nq
+        F2MIOdZA6kP2HHGNlvcGufI8wpteSB4+kTtd1JhswLSCLfn0CkFTpYZZpdbZuLAerSXb5vvsF9VPljUu
+        DXo0czC8ewVgtK+WAJjMYehHRvN8Vi1/gHDjGUFTFe25OIL3Cmb9gbEOgss8Jpoz10EdVsdaF+Si7cDE
+        xLYkOgJ9DWOqrQcas263WBdgVtyCoem2OKF6J9RNR7T7ymSoid5mXfD/H8ByMk3oFtEzt8hGiRZtBBqz
+        UdpkvYvMttPDkkOWj/BKvEPObo5L1lLg1oLwFpjRimoJAD/f9rQ/tq/gjFrS4EuCwPCicStyt+BMhMm2
+        hDPn2ppd0rhsyK/C2YeguC9NC2e2oDG9gVmO8tagMMfPznxjQgdco+X5QXfRFMWlHYRUEfYiYUJ5xhg0
+        eNQ+xECiUPgFd5UgG4z5aNoAAAAASUVORK5CYII=
+</value>
+  </data>
+  <data name="ShowPass.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
+    <value>NoControl</value>
+  </data>
+  <data name="ShowPass.Size" type="System.Drawing.Size, System.Drawing">
+    <value>31, 28</value>
+  </data>
+  <data name="UserLabel.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+    <value>
+        iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAABGdBTUEAALGPC/xhBQAAAAlwSFlzAAAL
+        DAAACwwBP0AiyAAAAPlJREFUSEvtkjEOgjAUhkkcvIImOnsO7+QJ1DbGzWNITIhx0wsAMdHJwd1NjejA
+        +PwpjwFbFIojX/IHEv73AW2dhr9A4aRPgVghzzTSo3A84Mf1SOXyhlA+4p4845o96Zd/yrMIl2v28JIY
+        5CoR1+z5+gJfPLhmD0SeJs7iyyXX7ElOi9pQTS6u5M96XKsHH1MX4kgFX/43eUMh5LotbOQQay9x3eF6
+        wvq/0qj7LSJUB10e+w2dF21s4giSCwT5k1MYdJMZzLLGDO2nXZSPZkmJ+PJAwbzDOh387sY4WClizTod
+        FGJ9oHJi1ukYylZhnY6pbBPWNZTBcd5mbDYKJWxUJQAAAABJRU5ErkJggg==
+</value>
+  </data>
+  <data name="UserLabel.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
+    <value>NoControl</value>
+  </data>
+  <data name="UserLabel.Size" type="System.Drawing.Size, System.Drawing">
+    <value>31, 28</value>
+  </data>
+  <data name="LockLabel.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+    <value>
+        iVBORw0KGgoAAAANSUhEUgAAABoAAAAaCAYAAACpSkzOAAAABGdBTUEAALGPC/xhBQAAAAlwSFlzAAAL
+        DAAACwwBP0AiyAAAAX5JREFUSEu9lU1KA0EQhbMSXbgTXKigRxF04UH8vUQWSfckYO6iIHHpRjI9waV7
+        8SfqBQR1U1Z3nlOZscfWmdYPHoTXVa/SlTDTCkEX7XnK1C7rhIy6JaNfoDv2Ttnbp9FgAeX14JBNDrun
+        TNO3MvqRUrWNtt9B42SLA968wT4Z9U7j7g7afwZd9hfdt8xD7Jr0AZnOhl2Tk/08XelNXpfpZ9uLmDDc
+        fJg32yGpWsbRF+jqeKkwbKyPcBSGw4cyKNmDXcn0Zp/1egg7TGFtabIOu5LpGlGfqQnsMDxI/gTX7TnY
+        ldiavN6oV9hh8iYWrCB1ev4WXL9f+H1qS014hT3v2t2Bt6mBOBPxQpyblGTUE+IFb2EEIV7wFcUQ4gVf
+        UQwhXigVnNGou0Kmt2ofKQ38wCBugM2vi85abZ8FW5g9/MdBfH1udk1Gndf2WYgXZg9jCvGCryiGEC/4
+        imII8YJ7EHoKG+oB8YJ9AHoKm8noBPGCe024YTFuVn5NtFofC/NZhlwvEIYAAAAASUVORK5CYII=
+</value>
+  </data>
+  <data name="LockLabel.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
+    <value>NoControl</value>
+  </data>
+  <data name="LockLabel.Size" type="System.Drawing.Size, System.Drawing">
+    <value>31, 28</value>
+  </data>
+  <data name="Title_txt.AutoSize" type="System.Boolean, mscorlib">
+    <value>True</value>
+  </data>
+  <data name="Title_txt.Font" type="System.Drawing.Font, System.Drawing">
+    <value>Bahnschrift, 12pt, style=Bold</value>
+  </data>
+  <data name="Title_txt.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
+    <value>NoControl</value>
+  </data>
+  <data name="Title_txt.Size" type="System.Drawing.Size, System.Drawing">
+    <value>308, 29</value>
+  </data>
+  <data name="Title_txt.Text" xml:space="preserve">
+    <value>SIGN IN TO YOUR ACCOUNT</value>
+  </data>
+  <data name="$this.Font" type="System.Drawing.Font, System.Drawing">
+    <value>Segoe UI, 9pt</value>
+  </data>
+</root>
