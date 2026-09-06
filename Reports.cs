@@ -1,15 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Security.Cryptography.X509Certificates;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
-
-namespace Digital_Shop_Software
+﻿namespace Digital_Shop_Software
 {
     public partial class Reports : Form
     {
@@ -30,12 +19,10 @@ namespace Digital_Shop_Software
             // Adding combobox items and loading the reports
             ReportSelection.Items.Add("Sales Report");
             ReportSelection.Items.Add("Top 10 vs Buttom 10");
-            Database.GetInstance().Open();
             Report report = new Report();
             report.LoadSalesReport();
             report.LoadTopReport();
             report.LoadButtomReport();
-            Database.GetInstance().Close();
             TopProdDataView.Size = new System.Drawing.Size(600, 435);
             BottomProdDataView.Size = new System.Drawing.Size(600, 435);
         }

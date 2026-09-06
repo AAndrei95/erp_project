@@ -1,14 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Data.SQLite;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
-using System.Windows.Forms.Design;
+﻿using System.Data.SQLite;
 
 namespace Digital_Shop_Software
 {
@@ -27,9 +17,11 @@ namespace Digital_Shop_Software
 
         private void AddClientOrder_Load(object sender, EventArgs e)
         {
-            Database.GetInstance().Open();
+            using SQLiteConnection connection = Database.CreateConnection();
+            connection.Open();
+
             SQLiteCommand command = new SQLiteCommand(
-               "Select * From Product;", Database.instance);
+               "Select * From Product;", connection);
             using (SQLiteDataReader read = command.ExecuteReader())
             {
                 while (read.Read())
@@ -42,7 +34,7 @@ namespace Digital_Shop_Software
                 }
             }
             SQLiteCommand cmd = new SQLiteCommand(
-               "Select * From client;", Database.instance);
+               "Select * From client;", connection);
             using (SQLiteDataReader read = cmd.ExecuteReader())
             {
                 while (read.Read())
@@ -54,18 +46,14 @@ namespace Digital_Shop_Software
                     });
                 }
             }
-            Database.GetInstance().Close();
             // Setting a default value for combobox
             clientid.Text = clientid.Items[0].ToString();
         }
 
         private void addValues_Click(object sender, EventArgs e)
         {
-           
             Order order = new Order();
-            Database.GetInstance().Open();
             order.CheckClientOrders();
-            Database.GetInstance().Close();
         }
 
         private void CloseButton_Click(object sender, EventArgs e)
@@ -81,17 +69,17 @@ namespace Digital_Shop_Software
                 Customer customer = new Customer();
                 AddCustomer addCustomer = new AddCustomer();
                 addCustomer.Show();
-                Database.GetInstance().Open();
                 customer.CheckAddCustomer();
-                Database.GetInstance().Close();
             }
         }
 
         private void p_code_SelectedValueChanged(object sender, EventArgs e)
         {
-            Database.GetInstance().Open();
+            using SQLiteConnection connection = Database.CreateConnection();
+            connection.Open();
+
             SQLiteCommand command = new SQLiteCommand(
-               "Select * From Product where ProductId = " + Convert.ToInt32(p_code.Text) + ";", Database.instance);
+               "Select * From Product where ProductId = " + Convert.ToInt32(p_code.Text) + ";", connection);
             using (SQLiteDataReader read = command.ExecuteReader())
             {
                 while (read.Read())
@@ -103,7 +91,6 @@ namespace Digital_Shop_Software
                     sale_price = read.GetValue(read.GetOrdinal("SalePrice")).ToString();
                 }
             }
-            Database.GetInstance().Close();
         }
 
         private void qty_TextChanged(object sender, EventArgs e)

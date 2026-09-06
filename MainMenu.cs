@@ -1,15 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
-using static System.Windows.Forms.DataFormats;
-
-namespace Digital_Shop_Software
+﻿namespace Digital_Shop_Software
 {
     public partial class MainMenu : Form
     {
@@ -225,4 +214,3 @@ namespace Digital_Shop_Software
         }
     }
 }
-

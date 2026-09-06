@@ -1,14 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
-
-namespace Digital_Shop_Software
+﻿namespace Digital_Shop_Software
 {
     public partial class AddCustomer : Form
     {
@@ -18,6 +8,7 @@ namespace Digital_Shop_Software
             addCustomer = this;
             InitializeComponent();
         }
+
         // Check if the customers has an order befere being added in the list
         private void checkBox1_CheckedChanged(object sender, EventArgs e)
         {
@@ -34,13 +25,12 @@ namespace Digital_Shop_Software
                 textBox28.Visible = false;
             }
         }
+
         // Add customer in the list 
         private void addValues_Click(object sender, EventArgs e)
         {
             Customer customer = new Customer();
-            Database.GetInstance().Open();
             customer.CheckAddCustomer();
-            Database.GetInstance().Close();
         }
 
         private void CloseButton_Click(object sender, EventArgs e)

@@ -1,11 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data.SQLite;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
-using System.Windows.Forms.VisualStyles;
+﻿using System.Data.SQLite;
 
 namespace Digital_Shop_Software
 {
@@ -22,10 +15,12 @@ namespace Digital_Shop_Software
         string supplier_id = "";
         public void LoadStock()
         {
+            using SQLiteConnection connection = Database.CreateConnection();
+            connection.Open();
             // Loading grid view with stock data
             SQLiteCommand command = new SQLiteCommand(
                 "Select * From Product Inner Join Users on Users.UserId = Product.fk_UserId Inner Join Supplier on Supplier.SupplierId = fk_supplierId;"
-                , Database.instance);
+                , connection);
             using (SQLiteDataReader read = command.ExecuteReader())
             {
                  while (read.Read())
@@ -48,10 +43,14 @@ namespace Digital_Shop_Software
                 }
             }
         }
+
         // Method that gets supplier id from database
         public string GetSupplier()
         {
-            SQLiteCommand find_Supplier = new SQLiteCommand("Select SupplierId from Supplier where SupplierName = \"" + AddStock.addStock.sup_name.Text + "\";", Database.instance);
+            using SQLiteConnection connection = Database.CreateConnection();
+            connection.Open();
+
+            SQLiteCommand find_Supplier = new SQLiteCommand("Select SupplierId from Supplier where SupplierName = \"" + AddStock.addStock.sup_name.Text + "\";", connection);
             using (SQLiteDataReader read = find_Supplier.ExecuteReader())
             {
                 while (read.Read())
@@ -64,6 +63,9 @@ namespace Digital_Shop_Software
         // Method that adds products into the database and refreshes grid view
         public void AddProducts()
         {
+            using SQLiteConnection connection = Database.CreateConnection();
+            connection.Open();
+
             User user = new User();
             SQLiteCommand command = new SQLiteCommand
                 (
@@ -80,11 +82,12 @@ namespace Digital_Shop_Software
                 del_date + "," +
                 Convert.ToInt32(GetSupplier()) + "," +
                 Convert.ToInt32(user.GetUserId()) +
-                ");", Database.instance);
+                ");", connection);
             command.ExecuteNonQuery();
             Stock.stock.StockDataGrid.Rows.Clear();
             LoadStock();
         }
+
         // Method that checks if all marked fields are completed
         public void CheckAddStock()
         {
@@ -138,6 +141,7 @@ namespace Digital_Shop_Software
                 ConvertValues();
             }
         }
+
         // Method that converts strings into decimals and integers
         public void ConvertValues()
         {
@@ -203,9 +207,13 @@ namespace Digital_Shop_Software
                 error = 1;
             }
         }
+
         // Method that removes products from the griview and database
         public void RemoveProduct()
         {
+            using SQLiteConnection connection = Database.CreateConnection();
+            connection.Open();
+
             if (Stock.stock.StockDataGrid.SelectedRows.Count > 0)
             {
                 DialogResult dg_res = MessageBox.Show("Are you sure you want to remove this row?", "Delete Row", MessageBoxButtons.YesNo);
@@ -214,7 +222,7 @@ namespace Digital_Shop_Software
                     foreach (DataGridViewRow item in Stock.stock.StockDataGrid.SelectedRows)
                     {
                         int id = Convert.ToInt32(Stock.stock.StockDataGrid.SelectedRows[0].Cells[0].Value);
-                        SQLiteCommand command = new SQLiteCommand("delete from product where productid = \"" + id + "\";", Database.instance);
+                        SQLiteCommand command = new SQLiteCommand("delete from product where productid = \"" + id + "\";", connection);
                         Stock.stock.StockDataGrid.Rows.RemoveAt(Stock.stock.StockDataGrid.SelectedRows[0].Index);
                         command.ExecuteNonQuery();
                     }
@@ -223,9 +231,13 @@ namespace Digital_Shop_Software
             else
             { MessageBox.Show("Please select a row in order to delete it!"); }
         }
+
         // Method that alows modifying the grid view cells along with database rows
         public void ModifyStock()
         {
+            using SQLiteConnection connection = Database.CreateConnection();
+            connection.Open();
+
             User user = new User();
             if (Stock.stock.StockDataGrid.EditMode == DataGridViewEditMode.EditProgrammatically)
             {
@@ -241,7 +253,7 @@ namespace Digital_Shop_Software
                         "onOrder = @onOrder, " +
                         "onOrderQty = @OnOrderQty, " +
                         "deliverydate = @deliverydate, " +
-                        "fk_Userid = @fk_userid where productid = @productid;", Database.instance);
+                        "fk_Userid = @fk_userid where productid = @productid;", connection);
                     command.Parameters.AddWithValue("@productid", Stock.stock.StockDataGrid.Rows[item].Cells[0].Value);
                     command.Parameters.AddWithValue("@name", Stock.stock.StockDataGrid.Rows[item].Cells[1].Value);
                     command.Parameters.AddWithValue("@category", Stock.stock.StockDataGrid.Rows[item].Cells[2].Value);

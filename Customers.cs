@@ -1,14 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
-
-namespace Digital_Shop_Software
+﻿namespace Digital_Shop_Software
 {
     public partial class Customers : Form
     {
@@ -27,10 +17,8 @@ namespace Digital_Shop_Software
         private void Customers_Load(object sender, EventArgs e)
         {
             // Loads customer data into grid view
-            Database.GetInstance().Open();
             Customer customer = new Customer();
             customer.LoadCustomers();
-            Database.GetInstance().Close();
         }
 
         private void AddCustomer_Click(object sender, EventArgs e)
@@ -44,9 +32,7 @@ namespace Digital_Shop_Software
         {
             // Removes a rows when button is clicked
             Customer customer = new Customer();
-            Database.GetInstance().Open();
             customer.RemoveCustomer();
-            Database.GetInstance().Close();
         }
 
         private void Modify_Click(object sender, EventArgs e)
@@ -54,9 +40,7 @@ namespace Digital_Shop_Software
 
             // Modifies a row
             Customer customer = new Customer();
-            Database.GetInstance().Open();
             customer.ModifyCustomer();
-            Database.GetInstance().Close();
         }
 
         private void CustomerDataGrid_CellContentDoubleClick(object sender, DataGridViewCellEventArgs e)

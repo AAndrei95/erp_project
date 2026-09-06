@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data.SQLite;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using static System.ComponentModel.Design.ObjectSelectorEditor;
+﻿using System.Data.SQLite;
 
 namespace Digital_Shop_Software
 {
@@ -12,10 +6,13 @@ namespace Digital_Shop_Software
     {
         public void LoadClientOrders()
         {
+            using SQLiteConnection connection = Database.CreateConnection();
+            connection.Open();
+
             // Loads client orders into grid view
             SQLiteCommand command = new SQLiteCommand(
                 "Select * From \"Client Orders\" Inner Join Client on Client.ClientId = \"Client Orders\".fk_ClientId Inner Join Product on Product.ProductId = \"Client Orders\".fk_ProductId;"
-                , Database.instance);
+                , connection);
             using (SQLiteDataReader read = command.ExecuteReader())
             {
                 while (read.Read())
@@ -34,12 +31,16 @@ namespace Digital_Shop_Software
                 }
             }
         }
+
         public void LoadPurchaseOrders()
         {
+            using SQLiteConnection connection = Database.CreateConnection();
+            connection.Open();
+
             // Loads purchase orders into grid view
             SQLiteCommand command = new SQLiteCommand(
                 "Select * From \"Purchase Orders\" Inner Join Product on Product.ProductId = \"Purchase Orders\".fk_ProductId;"
-                , Database.instance);
+                , connection);
             using (SQLiteDataReader read = command.ExecuteReader())
             {
                 while (read.Read())
@@ -58,8 +59,12 @@ namespace Digital_Shop_Software
                 }
             }
         }
+
         public void AddCustomerOrder()
         {
+            using SQLiteConnection connection = Database.CreateConnection();
+            connection.Open();
+
             // Add customer order in database and gridview
             Customer customer = new Customer();
             SQLiteCommand command = new SQLiteCommand(
@@ -69,21 +74,22 @@ namespace Digital_Shop_Software
                     Convert.ToInt32(AddClientOrder.addClientOrder.clientid.Text) + "," +
                     Convert.ToInt32(AddClientOrder.addClientOrder.p_code.Text) + "," +
                     Convert.ToDecimal(AddClientOrder.addClientOrder.o_val.Text) + ");"
-                    ,Database.instance);
+                    ,connection);
             command.ExecuteNonQuery();
             SQLiteCommand cmd = new SQLiteCommand("Update Client Set LastOrder = " + 
                 Convert.ToInt32(AddClientOrder.addClientOrder.order_date.Value.ToShortDateString().Replace("/", "")) + 
-                " where ClientId = " + Convert.ToInt32(AddClientOrder.addClientOrder.clientid.Text) + ";", Database.instance);
+                " where ClientId = " + Convert.ToInt32(AddClientOrder.addClientOrder.clientid.Text) + ";", connection);
             cmd.ExecuteNonQuery();
             SQLiteCommand cmd2 = new SQLiteCommand("Update product Set qty = " +
                 AddClientOrder.addClientOrder.sold_qty +
-                " where productId = " + Convert.ToInt32(AddClientOrder.addClientOrder.p_code.Text) + ";", Database.instance);
+                " where productId = " + Convert.ToInt32(AddClientOrder.addClientOrder.p_code.Text) + ";", connection);
             cmd2.ExecuteNonQuery();
             MessageBox.Show("You've succesfully added a new Order into the client order list!");
             Orders.orders.ClientOrderDataGrid.Rows.Clear();
             LoadClientOrders();
             AddClientOrder.addClientOrder.Close();
         }
+
         public void CheckClientOrders()
         {
             if (string.IsNullOrEmpty(AddClientOrder.addClientOrder.p_code.Text))
@@ -96,8 +102,12 @@ namespace Digital_Shop_Software
             }
             else { AddCustomerOrder(); }
         }
+
         public void RemoveCustomerOrder()
         {
+            using SQLiteConnection connection = Database.CreateConnection();
+            connection.Open();
+
             // If minimum a row is selected
             if (Orders.orders.ClientOrderDataGrid.SelectedRows.Count > 0)
             {
@@ -108,7 +118,7 @@ namespace Digital_Shop_Software
                     foreach (DataGridViewRow item in Orders.orders.ClientOrderDataGrid.SelectedRows)
                     {
                         int id = Convert.ToInt32(Orders.orders.ClientOrderDataGrid.SelectedRows[0].Cells[0].Value);
-                        SQLiteCommand command = new SQLiteCommand("delete from \"Client Orders\" where id = \"" + id + "\";", Database.instance);
+                        SQLiteCommand command = new SQLiteCommand("delete from \"Client Orders\" where id = \"" + id + "\";", connection);
                         Orders.orders.ClientOrderDataGrid.Rows.RemoveAt(Orders.orders.ClientOrderDataGrid.SelectedRows[0].Index);
                         command.ExecuteNonQuery();
                     }
@@ -118,8 +128,12 @@ namespace Digital_Shop_Software
             else
             { MessageBox.Show("Please select a row in order to delete it!"); }
         }
+
         public void ModifyCustomerOrder()
         {
+            using SQLiteConnection connection = Database.CreateConnection();
+            connection.Open();
+
             User user = new User();
             if (Orders.orders.ClientOrderDataGrid.EditMode == DataGridViewEditMode.EditProgrammatically)
             {
@@ -132,7 +146,7 @@ namespace Digital_Shop_Software
                             "orderQty = @orderQty, " +
                             "clientId = @clientId, " +
                             "value = @value, " +
-                            "where id = @id;", Database.instance);
+                            "where id = @id;", connection);
                         command.Parameters.AddWithValue("@id", Orders.orders.ClientOrderDataGrid.Rows[item].Cells[0].Value);
                         command.Parameters.AddWithValue("@clientId", Orders.orders.ClientOrderDataGrid.Rows[item].Cells[1].Value);
                         command.Parameters.AddWithValue("@Value", Orders.orders.ClientOrderDataGrid.Rows[item].Cells[6].Value);
@@ -145,8 +159,12 @@ namespace Digital_Shop_Software
             }
             else { MessageBox.Show("Please double click on a cell in order to edit it!"); }
         }
+
         public void AddPurchaseOrders()
         {
+            using SQLiteConnection connection = Database.CreateConnection();
+            connection.Open();
+
             // Add purchase order in database and gridview
             //Customer customer = new Customer();
             SQLiteCommand command = new SQLiteCommand(
@@ -158,20 +176,21 @@ namespace Digital_Shop_Software
                     Convert.ToDecimal(AddPurchaseOrder.addPurchaseOrder.o_val.Text) + "," +
                     Convert.ToInt32(AddPurchaseOrder.addPurchaseOrder.p_code.Text) + "," +
                     Convert.ToInt32(AddPurchaseOrder.addPurchaseOrder.del_date.Value.ToShortDateString().Replace("/", "")) +");"
-                    , Database.instance);
+                    , connection);
             command.ExecuteNonQuery();
             SQLiteCommand cmd2 = new SQLiteCommand("Update product " +
                 "Set qty = " + AddPurchaseOrder.addPurchaseOrder.new_stock + 
                 ", onorder = " + 1 +
                 ", OnOrderQty = " + Convert.ToInt32(AddPurchaseOrder.addPurchaseOrder.qty.Text) + 
                 ", deliverydate =  " + Convert.ToInt32(AddPurchaseOrder.addPurchaseOrder.del_date.Value.ToShortDateString().Replace("/", "")) +
-                " where productId = " + Convert.ToInt32(AddPurchaseOrder.addPurchaseOrder.p_code.Text) + ";", Database.instance);
+                " where productId = " + Convert.ToInt32(AddPurchaseOrder.addPurchaseOrder.p_code.Text) + ";", connection);
             cmd2.ExecuteNonQuery();
             MessageBox.Show("You've succesfully placed a supplier order!");
             Orders.orders.PurchaseOrdersDataGrid.Rows.Clear();
             LoadPurchaseOrders();
             AddPurchaseOrder.addPurchaseOrder.Close();
         }
+
         public void CheckPurchaseOrders()
         {
             if (string.IsNullOrEmpty(AddPurchaseOrder.addPurchaseOrder.p_code.Text))
@@ -184,10 +203,14 @@ namespace Digital_Shop_Software
             }
             else { AddPurchaseOrders(); }
         }
+
         public int GetPONumber()
         {
+            using SQLiteConnection connection = Database.CreateConnection();
+            connection.Open();
+
             int PONumber = 0;
-            SQLiteCommand command = new SQLiteCommand("SELECT * FROM \"Purchase Orders\" ORDER BY PoNumber DESC LIMIT 1;", Database.instance);
+            SQLiteCommand command = new SQLiteCommand("SELECT * FROM \"Purchase Orders\" ORDER BY PoNumber DESC LIMIT 1;", connection);
             using(SQLiteDataReader read = command.ExecuteReader())
             {
                 while (read.Read())
@@ -197,8 +220,12 @@ namespace Digital_Shop_Software
                 return PONumber + 1;
             }
         }
+
         public void RemovePurchaseOrder()
         {
+            using SQLiteConnection connection = Database.CreateConnection();
+            connection.Open();
+
             // If minimum a row is selected
             if (Orders.orders.PurchaseOrdersDataGrid.SelectedRows.Count > 0)
             {
@@ -209,7 +236,7 @@ namespace Digital_Shop_Software
                     foreach (DataGridViewRow item in Orders.orders.PurchaseOrdersDataGrid.SelectedRows)
                     {
                         int id = Convert.ToInt32(Orders.orders.PurchaseOrdersDataGrid.SelectedRows[0].Cells[0].Value);
-                        SQLiteCommand command = new SQLiteCommand("delete from \"Purchase Orders\" where POid = \"" + id + "\";", Database.instance);
+                        SQLiteCommand command = new SQLiteCommand("delete from \"Purchase Orders\" where POid = \"" + id + "\";", connection);
                         Orders.orders.PurchaseOrdersDataGrid.Rows.RemoveAt(Orders.orders.PurchaseOrdersDataGrid.SelectedRows[0].Index);
                         command.ExecuteNonQuery();
                     }
@@ -219,8 +246,11 @@ namespace Digital_Shop_Software
             else
             { MessageBox.Show("Please select a row in order to delete it!"); }
         }
-        public void ModifyPurchaseOrder()
+                public void ModifyPurchaseOrder()
         {
+            using SQLiteConnection connection = Database.CreateConnection();
+            connection.Open();
+
             User user = new User();
             if (Orders.orders.PurchaseOrdersDataGrid.EditMode == DataGridViewEditMode.EditProgrammatically)
             {
@@ -235,7 +265,7 @@ namespace Digital_Shop_Software
                             "qty = @qty, " +
                             "POValue = @POvalue, " +
                             "TBDDate = @TBDDate, " +
-                            "where poid = @poid;", Database.instance);
+                            "where poid = @poid;", connection);
                         command.Parameters.AddWithValue("@poid", Orders.orders.PurchaseOrdersDataGrid.Rows[item].Cells[0].Value);
                         command.Parameters.AddWithValue("@poDate", Orders.orders.PurchaseOrdersDataGrid.Rows[item].Cells[2].Value);
                         command.Parameters.AddWithValue("@qty", Orders.orders.PurchaseOrdersDataGrid.Rows[item].Cells[4].Value);

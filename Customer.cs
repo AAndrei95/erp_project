@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data.SQLite;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Data.SQLite;
 
 namespace Digital_Shop_Software
 {
@@ -13,7 +8,10 @@ namespace Digital_Shop_Software
         // Method that loads datagrid
         public void LoadCustomers()
         {
-            SQLiteCommand command = new SQLiteCommand("Select * From Client Inner Join Users on Users.UserID = Client.UserId;", Database.instance);
+            using SQLiteConnection connection = Database.CreateConnection();
+            connection.Open();
+
+            SQLiteCommand command = new SQLiteCommand("Select * From Client Inner Join Users on Users.UserID = Client.UserId;", connection);
             using (SQLiteDataReader read = command.ExecuteReader())
             {
                 while (read.Read())
@@ -31,9 +29,13 @@ namespace Digital_Shop_Software
                 }
             }
         }
+
         // Method that adds customers in the database and refreshes datagrid
         public void AddCustomers()
         {
+            using SQLiteConnection connection = Database.CreateConnection();
+            connection.Open();
+
             User user = new User();
             // If the user has an order
             if (AddCustomer.addCustomer.checkBox1.Checked)
@@ -47,7 +49,7 @@ namespace Digital_Shop_Software
                     ConvertToDate() + "," +
                     order_date + "," +
                     Convert.ToInt32(user.GetUserId()) +
-                    ");", Database.instance);
+                    ");", connection);
                 command.ExecuteNonQuery();
                 MessageBox.Show("You've succesfully added a new customer into the customer list!");
                 Customers.customers.CustomerDataGrid.Rows.Clear();
@@ -66,7 +68,7 @@ namespace Digital_Shop_Software
                     order_date + "," +
                     order_date + "," +
                     Convert.ToInt32(user.GetUserId()) +
-                    ");", Database.instance);
+                    ");", connection);
                 command.ExecuteNonQuery();
                 MessageBox.Show("You've succesfully added a new customer into the customer list!");
                 try
@@ -81,7 +83,7 @@ namespace Digital_Shop_Software
                     AddClientOrder.addClientOrder.new_client = false;
                     AddClientOrder.addClientOrder.clientid.Items.Clear();
                     SQLiteCommand cmd = new SQLiteCommand(
-                        "Select * From client;", Database.instance);
+                        "Select * From client;", connection);
                     using (SQLiteDataReader read = cmd.ExecuteReader())
                     {
                         while (read.Read())
@@ -98,6 +100,7 @@ namespace Digital_Shop_Software
                 }
             }
         }
+
         // Method that converts date string into integer
         public int ConvertToDate()
         {
@@ -106,6 +109,7 @@ namespace Digital_Shop_Software
             order_date = Convert.ToInt32(date);
             return order_date;
         }
+
         // Method that checks if the mandatory fields are filled
         public void CheckAddCustomer()
         {
@@ -122,6 +126,9 @@ namespace Digital_Shop_Software
         // Methods that removes rows from the datagrid along with rows from the database
         public void RemoveCustomer()
         {
+            using SQLiteConnection connection = Database.CreateConnection();
+            connection.Open();
+
             // If minimum a row is selected
             if (Customers.customers.CustomerDataGrid.SelectedRows.Count > 0)
             {
@@ -132,7 +139,7 @@ namespace Digital_Shop_Software
                     foreach (DataGridViewRow item in Customers.customers.CustomerDataGrid.SelectedRows)
                     {
                         int id = Convert.ToInt32(Customers.customers.CustomerDataGrid.SelectedRows[0].Cells[0].Value);
-                        SQLiteCommand command = new SQLiteCommand("delete from client where clientid = \"" + id + "\";", Database.instance);
+                        SQLiteCommand command = new SQLiteCommand("delete from client where clientid = \"" + id + "\";", connection);
                         Customers.customers.CustomerDataGrid.Rows.RemoveAt(Customers.customers.CustomerDataGrid.SelectedRows[0].Index);
                         command.ExecuteNonQuery();
                     }
@@ -142,9 +149,13 @@ namespace Digital_Shop_Software
             else
             { MessageBox.Show("Please select a row in order to delete it!"); }
         }
+
         // Method that allows modifying the datagrid along with the database
         public void ModifyCustomer()
         {
+            using SQLiteConnection connection = Database.CreateConnection();
+            connection.Open();
+
             User user = new User();
             if (Customers.customers.CustomerDataGrid.EditMode == DataGridViewEditMode.EditProgrammatically)
             {
@@ -157,7 +168,7 @@ namespace Digital_Shop_Software
                         "OrderDate = @orderDate, " +
                         "lastorder = @lastOrder, " +
                         "userid = @userid " +
-                        "where clientid = @clientid;", Database.instance);
+                        "where clientid = @clientid;", connection);
                     command.Parameters.AddWithValue("@clientid", Customers.customers.CustomerDataGrid.Rows[item].Cells[0].Value);
                     command.Parameters.AddWithValue("@email", Customers.customers.CustomerDataGrid.Rows[item].Cells[1].Value);
                     command.Parameters.AddWithValue("@phonenumber", Customers.customers.CustomerDataGrid.Rows[item].Cells[2].Value);

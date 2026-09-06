@@ -1,13 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Data.SQLite;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
+﻿using System.Data.SQLite;
 
 namespace Digital_Shop_Software
 {
@@ -28,14 +19,15 @@ namespace Digital_Shop_Software
         // Showing hint upon mouse hover whee username is inserted
         private void Hint_MouseHover(object sender, EventArgs e)
         {
-            Database.GetInstance();
-            Database.instance.Open();
+            using SQLiteConnection connection = Database.CreateConnection();
+            connection.Open();
+
             string username = Username.Text;
             var db_username = "";
             var sc_question = "";
             // Creating database command and executing it
             string db_get_username = "Select Username,SecurityQuestion from Users where Username = @username;";
-            SQLiteCommand command = new SQLiteCommand(db_get_username, Database.instance);
+            SQLiteCommand command = new SQLiteCommand(db_get_username, connection);
             command.Parameters.AddWithValue("@username", username);
             using (SQLiteDataReader reader = command.ExecuteReader())
             {
@@ -60,7 +52,6 @@ namespace Digital_Shop_Software
         private void Hint_MouseLeave(object sender, EventArgs e)
         {
             toolTip.RemoveAll();
-            Database.instance.Close();
         }
 
         // Validating credentials in order to change the password

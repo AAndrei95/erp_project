@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data.SQLite;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Data.SQLite;
 
 namespace Digital_Shop_Software
 {
@@ -12,7 +7,10 @@ namespace Digital_Shop_Software
         // Method that load suppliers in the data grid
         public void LoadSuppliers()
         {
-            SQLiteCommand command = new SQLiteCommand("Select * From Supplier;", Database.instance);
+            using SQLiteConnection connection = Database.CreateConnection();
+            connection.Open();
+
+            SQLiteCommand command = new SQLiteCommand("Select * From Supplier;", connection);
             using (SQLiteDataReader read = command.ExecuteReader())
             {
                 while (read.Read())
@@ -29,9 +27,13 @@ namespace Digital_Shop_Software
                 }
             }
         }
+
         // Method that adds supplier to data grid and database
         public void AddSuppliers()
         {
+            using SQLiteConnection connection = Database.CreateConnection();
+            connection.Open();
+
             Supplier supplier = new Supplier();
             SQLiteCommand command = new SQLiteCommand(
                 "Insert Into Supplier (SupplierName, Description, Email, PhoneNumber, Representative)" +
@@ -41,13 +43,14 @@ namespace Digital_Shop_Software
                 AddSupplier.addSupplier.email.Text + "\",\"" +
                 AddSupplier.addSupplier.ph_num.Text + "\",\"" +
                 AddSupplier.addSupplier.rep.Text +
-                "\");", Database.instance);
+                "\");", connection);
             command.ExecuteNonQuery();
             Suppliers.suppliers.SupplierDataGrid.Rows.Clear();
             supplier.LoadSuppliers();
             MessageBox.Show("You've succesfully added a new supplier into the supplier list!");
             AddSupplier.addSupplier.Close();
         }
+
         // Method that checks if the marked fields are completed
         public void CheckAddSupplier()
         {
@@ -69,9 +72,13 @@ namespace Digital_Shop_Software
             }
             else { AddSuppliers(); }
         }
+
         // Method that removes suppliers from the gridview and database
         public void RemoveSupplier()
         {
+            using SQLiteConnection connection = Database.CreateConnection();
+            connection.Open();
+
             if (Suppliers.suppliers.SupplierDataGrid.SelectedRows.Count > 0)
             {
                 DialogResult dg_res = MessageBox.Show("Are you sure you want to remove this row?", "Delete Row", MessageBoxButtons.YesNo);
@@ -80,7 +87,7 @@ namespace Digital_Shop_Software
                     foreach (DataGridViewRow item in Suppliers.suppliers.SupplierDataGrid.SelectedRows)
                     {
                         int id = Convert.ToInt32(Suppliers.suppliers.SupplierDataGrid.SelectedRows[0].Cells[0].Value);
-                        SQLiteCommand command = new SQLiteCommand("delete from supplier where supplierid = \"" + id + "\";", Database.instance);
+                        SQLiteCommand command = new SQLiteCommand("delete from supplier where supplierid = \"" + id + "\";", connection);
                         Suppliers.suppliers.SupplierDataGrid.Rows.RemoveAt(Suppliers.suppliers.SupplierDataGrid.SelectedRows[0].Index);
                         command.ExecuteNonQuery();
                     }
@@ -89,9 +96,13 @@ namespace Digital_Shop_Software
             else
             { MessageBox.Show("Please select a row in order to delete it!"); }
         }
+        
         // Method that modifies gridview and database supplier table
         public void ModifySupplier()
         {
+            using SQLiteConnection connection = Database.CreateConnection();
+            connection.Open();
+
             if (Suppliers.suppliers.SupplierDataGrid.EditMode == DataGridViewEditMode.EditProgrammatically)
             {
                 for (int item = 0; item <= Suppliers.suppliers.SupplierDataGrid.Rows.Count - 1; item++)
@@ -102,7 +113,7 @@ namespace Digital_Shop_Software
                         "email = @email, " +
                         "phonenumber = @phoneNumber, " +
                         "Representative = representative " +
-                        "where SupplierId = @SupplierId;", Database.instance);
+                        "where SupplierId = @SupplierId;", connection);
                     command.Parameters.AddWithValue("@SupplierId", Suppliers.suppliers.SupplierDataGrid.Rows[item].Cells[0].Value);
                     command.Parameters.AddWithValue("@supplierName", Suppliers.suppliers.SupplierDataGrid.Rows[item].Cells[1].Value);
                     command.Parameters.AddWithValue("@description", Suppliers.suppliers.SupplierDataGrid.Rows[item].Cells[2].Value);

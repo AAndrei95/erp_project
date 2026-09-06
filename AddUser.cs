@@ -1,15 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.DirectoryServices.ActiveDirectory;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
-
-namespace Digital_Shop_Software
+﻿namespace Digital_Shop_Software
 {
     public partial class AddUser : Form
     {
@@ -45,9 +34,7 @@ namespace Digital_Shop_Software
         {
             // Checking user input and adding in the user list
             User user = new User();
-            Database.GetInstance().Open();
             user.CheckAddUsers();
-            Database.GetInstance().Close();
         }
 
         private void CloseButton_Click_1(object sender, EventArgs e)

@@ -1,15 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
-using Microsoft.VisualBasic.ApplicationServices;
-
-namespace Digital_Shop_Software
+﻿namespace Digital_Shop_Software
 {
     public partial class Users : Form
     {
@@ -29,10 +18,8 @@ namespace Digital_Shop_Software
         private void Users_Load(object sender, EventArgs e)
         {
             // Loads users in grid view
-            Database.GetInstance().Open();
             User user = new User();
             user.GetPosition(Login.login.Username.Text);
-            Database.GetInstance().Close();
         }
 
         private void addValues_Click(object sender, EventArgs e)
@@ -44,10 +31,7 @@ namespace Digital_Shop_Software
         {
             // Removes user from data grid and database
             User user = new User();
-            Database.GetInstance().Open();
             user.RemoveUser();
-            Database.GetInstance().Close();
-
         }
 
         private void UsersDataGrid_CellContentDoubleClick(object sender, DataGridViewCellEventArgs e)
@@ -68,10 +52,7 @@ namespace Digital_Shop_Software
         {
                 // Modify user grid view and database records
                 User user = new User();
-                Database.GetInstance().Open();
-                user.ModifyUser();
-                Database.GetInstance().Close();
-           
+                user.ModifyUser();           
         }
     }
 }

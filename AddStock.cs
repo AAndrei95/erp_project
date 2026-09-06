@@ -1,6 +1,4 @@
 ﻿using System.Data.SQLite;
-using System.Security.Policy;
-using System.Web;
 
 namespace Digital_Shop_Software
 {
@@ -14,10 +12,12 @@ namespace Digital_Shop_Software
         }
         private void AddStock_Load(object sender, EventArgs e)
         {
+            using SQLiteConnection connection = Database.CreateConnection();
+            connection.Open();
+
             // Searching for supplier names
-            Database.GetInstance().Open();
             SQLiteCommand command = new SQLiteCommand(
-               "Select * From Supplier;", Database.instance);
+               "Select * From Supplier;", connection);
             using (SQLiteDataReader read = command.ExecuteReader())
             {
                 while (read.Read())
@@ -29,7 +29,6 @@ namespace Digital_Shop_Software
                     });
                 }
             }
-            Database.GetInstance().Close();
             // On order bool combobox
             onOrder.Items.Add(0);
             onOrder.Items.Add(1);
@@ -45,10 +44,8 @@ namespace Digital_Shop_Software
             // Checking if there are no error with user input and adding the product in stock 
             if (products.error == 0)
             {
-                Database.GetInstance().Open();
                 products.AddProducts();
                 MessageBox.Show("You've succesfully added a product into the stock!");
-                Database.GetInstance().Close();
                 this.Close();
             }
         }

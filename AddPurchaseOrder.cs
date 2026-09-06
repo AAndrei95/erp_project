@@ -1,13 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Data.SQLite;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
+﻿using System.Data.SQLite;
 
 namespace Digital_Shop_Software
 {
@@ -24,12 +15,14 @@ namespace Digital_Shop_Software
 
         private void AddPurchaseOrder_Load(object sender, EventArgs e)
         {
+            using SQLiteConnection connection = Database.CreateConnection();
+            connection.Open();
+
             po_date.MinDate = DateTime.Now;
             del_date.MinDate = po_date.Value;
 
-            Database.GetInstance().Open();
             SQLiteCommand command = new SQLiteCommand(
-               "Select * From Product;", Database.instance);
+               "Select * From Product;", connection);
             using (SQLiteDataReader read = command.ExecuteReader())
             {
                 while (read.Read())
@@ -41,7 +34,6 @@ namespace Digital_Shop_Software
                     });
                 }
             }
-            Database.GetInstance().Close();
         }
 
         private void po_date_ValueChanged(object sender, EventArgs e)
@@ -56,9 +48,11 @@ namespace Digital_Shop_Software
 
         private void p_code_SelectedValueChanged(object sender, EventArgs e)
         {
-            Database.GetInstance().Open();
+            using SQLiteConnection connection = Database.CreateConnection();
+            connection.Open();
+
             SQLiteCommand command = new SQLiteCommand(
-               "Select * From Product where ProductId = " + Convert.ToInt32(p_code.Text) + ";", Database.instance);
+               "Select * From Product where ProductId = " + Convert.ToInt32(p_code.Text) + ";", connection);
             using (SQLiteDataReader read = command.ExecuteReader())
             {
                 while (read.Read())
@@ -70,7 +64,6 @@ namespace Digital_Shop_Software
                     supplier_price = read.GetValue(read.GetOrdinal("SupplierPrice")).ToString();
                 }
             }
-            Database.GetInstance().Close();
         }
 
         private void qty_TextChanged(object sender, EventArgs e)
@@ -110,9 +103,7 @@ namespace Digital_Shop_Software
         private void addValues_Click(object sender, EventArgs e)
         {
             Order order = new Order();
-            Database.GetInstance().Open();
             order.CheckPurchaseOrders();
-            Database.GetInstance().Close();
         }
     }
 }

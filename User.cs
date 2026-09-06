@@ -1,16 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data.SQLite;
-using System.Linq;
-using System.Security.Cryptography;
-using System.Text;
-using System.Threading.Tasks;
-using System.Xml;
-using System.Windows.Forms;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement.StartPanel;
-using System.CodeDom;
-using System.DirectoryServices.ActiveDirectory;
+﻿using System.Data.SQLite;
 
 namespace Digital_Shop_Software
 {
@@ -23,12 +11,14 @@ namespace Digital_Shop_Software
         public void CheckCredentials(string username, string password)
         {
             // Opening database connection
-            Database.GetInstance().Open();
+            using SQLiteConnection connection = Database.CreateConnection();
+            connection.Open();
+
             var db_username = "";
             var db_password = "";
             // Setting the command
             string db_user = "Select Username, Password from Users where Username =@username;";
-            SQLiteCommand command = new SQLiteCommand(db_user, Database.instance);
+            SQLiteCommand command = new SQLiteCommand(db_user, connection);
             command.Parameters.AddWithValue("@username", username);
             // Executing the command
             using (SQLiteDataReader reader = command.ExecuteReader())
@@ -45,7 +35,6 @@ namespace Digital_Shop_Software
                     MessageBox.Show("Invalid username!");
                     Login.login.Username.Clear();
                     Login.login.Password.Clear();
-                    Database.GetInstance().Close();
                 }
                 // If the username exist call method CheckPassword
                 else
@@ -54,6 +43,7 @@ namespace Digital_Shop_Software
                 }
             }
         }
+
         // Method that checks if the user input (password) matches database record
         public void CheckPassword(string password, string db_password)
         {
@@ -65,14 +55,12 @@ namespace Digital_Shop_Software
                 MessageBox.Show("Login Succesful!\nWelcome " + Login.login.Username.Text);
                 Login.login.Password.Clear();
                 Login.login.Hide();
-                Database.GetInstance().Close();
             }
             // Else clear password textbox and show message
             else
             {
                 Login.login.Password.Clear();
                 MessageBox.Show("Wrong password!");
-                Database.GetInstance().Close();
             }
         }
 
@@ -80,13 +68,15 @@ namespace Digital_Shop_Software
         public void Reset_Pass_Username(string username, string sq_answer, string new_pass, string new_pass_conf)
         {
             // Opening database connection
-            Database.GetInstance().Open();
+            using SQLiteConnection connection = Database.CreateConnection();
+            connection.Open();
+
             var db_username = "";
             var db_sq_answer = "";
             var db_old_pass = "";
             // Setting the command
             string db_get_answer = "Select Username, SQAnswer, Password from Users where Username = @username;";
-            SQLiteCommand command = new SQLiteCommand(db_get_answer, Database.instance);
+            SQLiteCommand command = new SQLiteCommand(db_get_answer, connection);
             command.Parameters.AddWithValue("@username", username);
             // Executing the command
             using (SQLiteDataReader reader = command.ExecuteReader())
@@ -106,7 +96,6 @@ namespace Digital_Shop_Software
                     ResetPassword.r_pass.SQAnswer.Clear();
                     ResetPassword.r_pass.New_pass.Clear();
                     ResetPassword.r_pass.New_pass_conf.Clear();
-                    Database.GetInstance().Close();
                 }
                 // If the user input matches security question answer call CheckSQAnswer
                 else
@@ -115,6 +104,7 @@ namespace Digital_Shop_Software
                 }
             }
         }
+
         // Method that checks if the security question answer is correct
         public void CheckSQAnswer(string sq_answer, string db_sq_answer, string new_pass, string new_pass_conf, string username, string db_old_pass)
         {
@@ -125,7 +115,6 @@ namespace Digital_Shop_Software
                 ResetPassword.r_pass.SQAnswer.Clear();
                 ResetPassword.r_pass.New_pass.Clear();
                 ResetPassword.r_pass.New_pass_conf.Clear();
-                Database.GetInstance().Close();
             }
             // Call ChangePassword method
             else
@@ -133,26 +122,28 @@ namespace Digital_Shop_Software
                 ChangePassword(new_pass, new_pass_conf, username, db_old_pass);
             }
         }
+
         // Method that checks if the password is not the current one and changes it
         public void ChangePassword(string new_pass, string new_pass_conf, string username, string db_old_pass)
         {
+            using SQLiteConnection connection = Database.CreateConnection();
+            connection.Open();
+            
             if (!string.IsNullOrEmpty(new_pass) && new_pass != db_old_pass && new_pass == new_pass_conf)
             {
                 string db_set_pass = "UPDATE Users SET Password = " + "\"" + new_pass + "\"" + " where Username = \"" + username + "\";";
-                SQLiteCommand command = new SQLiteCommand(db_set_pass, Database.instance);
+                SQLiteCommand command = new SQLiteCommand(db_set_pass, connection);
                 SQLiteDataReader reader = command.ExecuteReader();
                 MessageBox.Show("Your password has been changed!");
                 //Database.instance.Close();
                 ResetPassword.r_pass.Close();
                 Login.login.BringToFront();
-                Database.GetInstance().Close();
             }
             else if (new_pass == db_old_pass) {
                 MessageBox.Show("Your new password cannot be your old password!.");
                 ResetPassword.r_pass.SQAnswer.Clear();
                 ResetPassword.r_pass.New_pass.Clear();
                 ResetPassword.r_pass.New_pass_conf.Clear();
-                Database.instance.Close();
             }
             else
             {
@@ -160,13 +151,16 @@ namespace Digital_Shop_Software
                 ResetPassword.r_pass.SQAnswer.Clear();
                 ResetPassword.r_pass.New_pass.Clear();
                 ResetPassword.r_pass.New_pass_conf.Clear();
-                Database.GetInstance().Close();
             }
         }
+
         public string GetPosition(string username)
         {
+            using SQLiteConnection connection = Database.CreateConnection();
+            connection.Open();
+            
             string get_positon = "Select * from Users where Username =@username;";
-            SQLiteCommand command = new SQLiteCommand(get_positon, Database.instance);
+            SQLiteCommand command = new SQLiteCommand(get_positon, connection);
             command.Parameters.AddWithValue("@username", username);
             // Executing the command
             using (SQLiteDataReader reader = command.ExecuteReader())
@@ -180,10 +174,14 @@ namespace Digital_Shop_Software
                 return position;
             }
         }
+
         // Method that loads users in the grid view
         public void LoadUsers(string position)
         {
-            SQLiteCommand command = new SQLiteCommand("Select * From Users", Database.instance);
+            using SQLiteConnection connection = Database.CreateConnection();
+            connection.Open();
+
+            SQLiteCommand command = new SQLiteCommand("Select * From Users", connection);
             using (SQLiteDataReader read = command.ExecuteReader())
             {
                 while (read.Read())
@@ -242,8 +240,11 @@ namespace Digital_Shop_Software
         }
         public string GetUserId()
         {
+            using SQLiteConnection connection = Database.CreateConnection();
+            connection.Open();
+
             string get_positon = "Select * from Users where Username =@username;";
-            SQLiteCommand command = new SQLiteCommand(get_positon, Database.instance);
+            SQLiteCommand command = new SQLiteCommand(get_positon, connection);
             command.Parameters.AddWithValue("@username", Login.login.Username.Text);
             // Executing the command
             using (SQLiteDataReader reader = command.ExecuteReader())
@@ -256,9 +257,13 @@ namespace Digital_Shop_Software
                 return userId;
             }
         }
+
         // Method that adds users in the grid view and database
         public void AddUsers()
         {
+            using SQLiteConnection connection = Database.CreateConnection();
+            connection.Open();
+
             SQLiteCommand command = new SQLiteCommand(
                 "Insert into Users ( Position, Username, Password, DoB, Sex, Email, PhoneNumber, SecurityQuestion, SQAnswer)" +
                 "Values (\"" +
@@ -270,7 +275,7 @@ namespace Digital_Shop_Software
                 AddUser.addUser.email.Text + "\",\"" +
                 AddUser.addUser.ph_num.Text + "\",\"" +
                 AddUser.addUser.sq.Text + "\",\"" +
-                AddUser.addUser.sqa.Text + "\");", Database.instance);
+                AddUser.addUser.sqa.Text + "\");", connection);
             command.ExecuteNonQuery();
             MessageBox.Show("You've succesfully added a new user into the user list!");
             Users.users.UsersDataGrid.Rows.Clear();
@@ -314,9 +319,13 @@ namespace Digital_Shop_Software
             dob = Convert.ToInt32(date);
             return dob;
         }
+
         // Method that removes users from database and gridview
         public void RemoveUser()
         {
+            using SQLiteConnection connection = Database.CreateConnection();
+            connection.Open();
+
             if (Users.users.UsersDataGrid.SelectedRows.Count > 0)
             {
                 DialogResult dg_res = MessageBox.Show("Are you sure you want to remove this row?", "Delete Row", MessageBoxButtons.YesNo);
@@ -325,7 +334,7 @@ namespace Digital_Shop_Software
                     foreach (DataGridViewRow item in Users.users.UsersDataGrid.SelectedRows)
                     {
                         int id = Convert.ToInt32(Users.users.UsersDataGrid.SelectedRows[0].Cells[0].Value);
-                        SQLiteCommand command = new SQLiteCommand("delete from users where userid = \"" + id + "\";", Database.instance);
+                        SQLiteCommand command = new SQLiteCommand("delete from users where userid = \"" + id + "\";", connection);
                         Users.users.UsersDataGrid.Rows.RemoveAt(Users.users.UsersDataGrid.SelectedRows[0].Index);
                         command.ExecuteNonQuery();
                     }
@@ -334,9 +343,13 @@ namespace Digital_Shop_Software
             else
             { MessageBox.Show("Please select a row in order to delete it!"); }
         }
+
         // Method that allows modifying users gridview and database
         public void ModifyUser()
         {
+            using SQLiteConnection connection = Database.CreateConnection();
+            connection.Open();
+
             if (Users.users.UsersDataGrid.EditMode == DataGridViewEditMode.EditProgrammatically)
             {
                 for (int item = 0; item <= Users.users.UsersDataGrid.Rows.Count - 1; item++)
@@ -350,7 +363,7 @@ namespace Digital_Shop_Software
                         "email = @email, " +
                         "phonenumber = @phoneNumber, " +
                         "SecurityQuestion = @SecurityQuestion, " +
-                        "SQAnswer = @SQAnswer where userid = @userid;", Database.instance);
+                        "SQAnswer = @SQAnswer where userid = @userid;", connection);
                     command.Parameters.AddWithValue("@userid", Users.users.UsersDataGrid.Rows[item].Cells[0].Value);
                     command.Parameters.AddWithValue("@position", Users.users.UsersDataGrid.Rows[item].Cells[1].Value);
                     command.Parameters.AddWithValue("@username", Users.users.UsersDataGrid.Rows[item].Cells[2].Value);
@@ -370,4 +383,3 @@ namespace Digital_Shop_Software
         }
     }
 }
-

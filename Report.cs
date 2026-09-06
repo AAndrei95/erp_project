@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data.SQLite;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Data.SQLite;
 
 namespace Digital_Shop_Software
 {
@@ -11,17 +6,21 @@ namespace Digital_Shop_Software
     {
         public void LoadSalesReport()
         {
+            using SQLiteConnection connection = Database.CreateConnection();
+            connection.Open();
+
             // Method that load the sales report into grid view
             SQLiteCommand command = new SQLiteCommand(
-        "Select *," +
-        "(Sum(Orders.\"Total Orders\") * Product.SupplierPrice) as \"Net Cost\", " +
-        "(Sum(Orders.\"Total Orders\") * Product.SalePrice) as Sale," +
-        "((Sum(Orders.\"Total Orders\") * Product.SalePrice) - (Sum(Orders.\"Total Orders\") * Product.SupplierPrice)) as Profit " +
-        "from Product Left Join " +
-        "(Select fk_ProductId, Sum(OrderQty) as \"Total Orders\"from \"Client Orders\" Group by fk_productid) " +
-        "as Orders on Orders.fk_ProductId = Product.ProductId " +
-        "Where Orders.\"Total Orders\" > 0 Group by ProductId;"
-        , Database.instance);
+                "Select *," +
+                "(Sum(Orders.\"Total Orders\") * Product.SupplierPrice) as \"Net Cost\", " +
+                "(Sum(Orders.\"Total Orders\") * Product.SalePrice) as Sale," +
+                "((Sum(Orders.\"Total Orders\") * Product.SalePrice) - (Sum(Orders.\"Total Orders\") * Product.SupplierPrice)) as Profit " +
+                "from Product Left Join " +
+                "(Select fk_ProductId, Sum(OrderQty) as \"Total Orders\"from \"Client Orders\" Group by fk_productid) " +
+                "as Orders on Orders.fk_ProductId = Product.ProductId " +
+                "Where Orders.\"Total Orders\" > 0 Group by ProductId;"
+                , connection
+            );
             using (SQLiteDataReader read = command.ExecuteReader())
             {
                 while (read.Read())
@@ -39,19 +38,24 @@ namespace Digital_Shop_Software
                 }
             }
         }
+
         public void LoadTopReport()
         {
+            using SQLiteConnection connection = Database.CreateConnection();
+            connection.Open();
+
             // Method that loads top 10 products into grid view
             SQLiteCommand command = new SQLiteCommand(
-        "Select *," +
-        "(Sum(Orders.\"Total Orders\") * Product.SupplierPrice) as \"Net Cost\", " +
-        "(Sum(Orders.\"Total Orders\") * Product.SalePrice) as Sale," +
-        "((Sum(Orders.\"Total Orders\") * Product.SalePrice) - (Sum(Orders.\"Total Orders\") * Product.SupplierPrice)) as Profit " +
-        "from Product Left Join " +
-        "(Select fk_ProductId, Sum(OrderQty) as \"Total Orders\"from \"Client Orders\" Group by fk_productid) " +
-        "as Orders on Orders.fk_ProductId = Product.ProductId " +
-        "Where Orders.\"Total Orders\" > 0 Group by ProductId Order by SalePrice DESC limit 10;"
-        , Database.instance);
+                "Select *," +
+                "(Sum(Orders.\"Total Orders\") * Product.SupplierPrice) as \"Net Cost\", " +
+                "(Sum(Orders.\"Total Orders\") * Product.SalePrice) as Sale," +
+                "((Sum(Orders.\"Total Orders\") * Product.SalePrice) - (Sum(Orders.\"Total Orders\") * Product.SupplierPrice)) as Profit " +
+                "from Product Left Join " +
+                "(Select fk_ProductId, Sum(OrderQty) as \"Total Orders\"from \"Client Orders\" Group by fk_productid) " +
+                "as Orders on Orders.fk_ProductId = Product.ProductId " +
+                "Where Orders.\"Total Orders\" > 0 Group by ProductId Order by SalePrice DESC limit 10;"
+                , connection
+            );
             using (SQLiteDataReader read = command.ExecuteReader())
             {
                 while (read.Read())
@@ -69,19 +73,24 @@ namespace Digital_Shop_Software
                 }
             }
         }
+
         // Method that loads bottom 10 products into grid view
         public void LoadButtomReport()
         {
+            using SQLiteConnection connection = Database.CreateConnection();
+            connection.Open();
+            
             SQLiteCommand command = new SQLiteCommand(
-        "Select *," +
-        "(Sum(Orders.\"Total Orders\") * Product.SupplierPrice) as \"Net Cost\", " +
-        "(Sum(Orders.\"Total Orders\") * Product.SalePrice) as Sale," +
-        "((Sum(Orders.\"Total Orders\") * Product.SalePrice) - (Sum(Orders.\"Total Orders\") * Product.SupplierPrice)) as Profit " +
-        "from Product Left Join " +
-        "(Select fk_ProductId, Sum(OrderQty) as \"Total Orders\"from \"Client Orders\" Group by fk_productid) " +
-        "as Orders on Orders.fk_ProductId = Product.ProductId " +
-        "Where Orders.\"Total Orders\" > 0 Group by ProductId Order by SalePrice ASC limit 10;"
-        , Database.instance);
+                "Select *," +
+                "(Sum(Orders.\"Total Orders\") * Product.SupplierPrice) as \"Net Cost\", " +
+                "(Sum(Orders.\"Total Orders\") * Product.SalePrice) as Sale," +
+                "((Sum(Orders.\"Total Orders\") * Product.SalePrice) - (Sum(Orders.\"Total Orders\") * Product.SupplierPrice)) as Profit " +
+                "from Product Left Join " +
+                "(Select fk_ProductId, Sum(OrderQty) as \"Total Orders\"from \"Client Orders\" Group by fk_productid) " +
+                "as Orders on Orders.fk_ProductId = Product.ProductId " +
+                "Where Orders.\"Total Orders\" > 0 Group by ProductId Order by SalePrice ASC limit 10;"
+                , connection
+            );
             using (SQLiteDataReader read = command.ExecuteReader())
             {
                 while (read.Read())
