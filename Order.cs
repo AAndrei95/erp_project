@@ -11,7 +11,7 @@ namespace Digital_Shop_Software
 
             // Loads client orders into grid view
             SQLiteCommand command = new SQLiteCommand(
-                "Select * From \"Client Orders\" Inner Join Client on Client.ClientId = \"Client Orders\".fk_ClientId Inner Join Product on Product.ProductId = \"Client Orders\".fk_ProductId;"
+                "SELECT * FROM \"Client Orders\" INNER JOIN Client ON Client.ClientId = \"Client Orders\".fk_ClientId INNER JOIN Product ON Product.ProductId = \"Client Orders\".fk_ProductId;"
                 , connection);
             using (SQLiteDataReader read = command.ExecuteReader())
             {
@@ -39,7 +39,7 @@ namespace Digital_Shop_Software
 
             // Loads purchase orders into grid view
             SQLiteCommand command = new SQLiteCommand(
-                "Select * From \"Purchase Orders\" Inner Join Product on Product.ProductId = \"Purchase Orders\".fk_ProductId;"
+                "SELECT * FROM \"Purchase Orders\" INNER JOIN Product ON Product.ProductId = \"Purchase Orders\".fk_ProductId;"
                 , connection);
             using (SQLiteDataReader read = command.ExecuteReader())
             {
@@ -68,22 +68,55 @@ namespace Digital_Shop_Software
             // Add customer order in database and gridview
             Customer customer = new Customer();
             SQLiteCommand command = new SQLiteCommand(
-                    "Insert into \"Client Orders\" (OrderQty, fk_clientId, fk_productId,Value)" +
-                    "Values(" +
-                    Convert.ToInt32(AddClientOrder.addClientOrder.qty.Text) + "," +
-                    Convert.ToInt32(AddClientOrder.addClientOrder.clientid.Text) + "," +
-                    Convert.ToInt32(AddClientOrder.addClientOrder.p_code.Text) + "," +
-                    Convert.ToDecimal(AddClientOrder.addClientOrder.o_val.Text) + ");"
-                    ,connection);
+                "INSERT INTO \"Client Orders\" " +
+                "(OrderQty, fk_clientId, fk_productId, Value) " +
+                "VALUES (@orderQty, @clientId, @productId, @value);",
+                connection);
+
+            command.Parameters.AddWithValue(
+                "@orderQty",
+                Convert.ToInt32(AddClientOrder.addClientOrder.qty.Text));
+            command.Parameters.AddWithValue(
+                "@clientId",
+                Convert.ToInt32(AddClientOrder.addClientOrder.clientid.Text));
+            command.Parameters.AddWithValue(
+                "@productId",
+                Convert.ToInt32(AddClientOrder.addClientOrder.p_code.Text));
+            command.Parameters.AddWithValue(
+                "@value",
+                Convert.ToDecimal(AddClientOrder.addClientOrder.o_val.Text));
+
             command.ExecuteNonQuery();
-            SQLiteCommand cmd = new SQLiteCommand("Update Client Set LastOrder = " + 
-                Convert.ToInt32(AddClientOrder.addClientOrder.order_date.Value.ToShortDateString().Replace("/", "")) + 
-                " where ClientId = " + Convert.ToInt32(AddClientOrder.addClientOrder.clientid.Text) + ";", connection);
+
+            SQLiteCommand cmd = new SQLiteCommand(
+                "UPDATE Client SET LastOrder = @lastOrder WHERE ClientId = @clientId;",
+                connection);
+
+            cmd.Parameters.AddWithValue(
+                "@lastOrder",
+                Convert.ToInt32(
+                    AddClientOrder.addClientOrder.order_date.Value
+                        .ToShortDateString()
+                        .Replace("/", "")));
+            cmd.Parameters.AddWithValue(
+                "@clientId",
+                Convert.ToInt32(AddClientOrder.addClientOrder.clientid.Text));
+
             cmd.ExecuteNonQuery();
-            SQLiteCommand cmd2 = new SQLiteCommand("Update product Set qty = " +
-                AddClientOrder.addClientOrder.sold_qty +
-                " where productId = " + Convert.ToInt32(AddClientOrder.addClientOrder.p_code.Text) + ";", connection);
+
+            SQLiteCommand cmd2 = new SQLiteCommand(
+                "UPDATE Product SET Qty = @qty WHERE ProductId = @productId;",
+                connection);
+
+            cmd2.Parameters.AddWithValue(
+                "@qty",
+                AddClientOrder.addClientOrder.sold_qty);
+            cmd2.Parameters.AddWithValue(
+                "@productId",
+                 Convert.ToInt32(AddClientOrder.addClientOrder.p_code.Text));
+
             cmd2.ExecuteNonQuery();
+            
             MessageBox.Show("You've succesfully added a new Order into the client order list!");
             Orders.orders.ClientOrderDataGrid.Rows.Clear();
             LoadClientOrders();
@@ -117,9 +150,17 @@ namespace Digital_Shop_Software
                     // For each row selected in the datagrid delete the matching row in the database
                     foreach (DataGridViewRow item in Orders.orders.ClientOrderDataGrid.SelectedRows)
                     {
-                        int id = Convert.ToInt32(Orders.orders.ClientOrderDataGrid.SelectedRows[0].Cells[0].Value);
-                        SQLiteCommand command = new SQLiteCommand("delete from \"Client Orders\" where id = \"" + id + "\";", connection);
+                        int id = Convert.ToInt32(
+                            Orders.orders.ClientOrderDataGrid.SelectedRows[0].Cells[0].Value);
+
+                        SQLiteCommand command = new SQLiteCommand(
+                            "DELETE FROM \"Client Orders\" WHERE id = @id;",
+                            connection);
+
+                        command.Parameters.AddWithValue("@id", id);
+
                         Orders.orders.ClientOrderDataGrid.Rows.RemoveAt(Orders.orders.ClientOrderDataGrid.SelectedRows[0].Index);
+
                         command.ExecuteNonQuery();
                     }
                 }
@@ -142,14 +183,27 @@ namespace Digital_Shop_Software
                 {
                     for (int item = 0; item <= Orders.orders.ClientOrderDataGrid.Rows.Count - 1; item++)
                     {
-                        SQLiteCommand command = new SQLiteCommand("Update \"Client Orders\" set " +
+                        SQLiteCommand command = new SQLiteCommand(
+                            "UPDATE \"Client Orders\" SET " +
                             "orderQty = @orderQty, " +
                             "clientId = @clientId, " +
-                            "value = @value, " +
-                            "where id = @id;", connection);
-                        command.Parameters.AddWithValue("@id", Orders.orders.ClientOrderDataGrid.Rows[item].Cells[0].Value);
-                        command.Parameters.AddWithValue("@clientId", Orders.orders.ClientOrderDataGrid.Rows[item].Cells[1].Value);
-                        command.Parameters.AddWithValue("@Value", Orders.orders.ClientOrderDataGrid.Rows[item].Cells[6].Value);
+                            "value = @value " +
+                            "WHERE id = @id;",
+                            connection);
+
+                        command.Parameters.AddWithValue(
+                            "@id",
+                            Orders.orders.ClientOrderDataGrid.Rows[item].Cells[0].Value);
+                        command.Parameters.AddWithValue(
+                            "@orderQty",
+                            Orders.orders.ClientOrderDataGrid.Rows[item].Cells[5].Value);
+                        command.Parameters.AddWithValue(
+                            "@clientId",
+                            Orders.orders.ClientOrderDataGrid.Rows[item].Cells[1].Value);
+                        command.Parameters.AddWithValue(
+                            "@Value",
+                            Orders.orders.ClientOrderDataGrid.Rows[item].Cells[6].Value);
+
                         command.ExecuteNonQuery();
                     }
                     Orders.orders.ClientOrderDataGrid.EndEdit();
@@ -167,24 +221,69 @@ namespace Digital_Shop_Software
 
             // Add purchase order in database and gridview
             //Customer customer = new Customer();
-            SQLiteCommand command = new SQLiteCommand(
-                    "Insert into \"Purchase Orders\" (PONumber, PODate, qty, POValue,fk_productid, TBDDate)" +
-                    "Values(" +
-                    GetPONumber() + "," +
-                    Convert.ToInt32(AddPurchaseOrder.addPurchaseOrder.po_date.Value.ToShortDateString().Replace("/", "")) + "," +
-                    Convert.ToInt32(AddPurchaseOrder.addPurchaseOrder.qty.Text) + "," +
-                    Convert.ToDecimal(AddPurchaseOrder.addPurchaseOrder.o_val.Text) + "," +
-                    Convert.ToInt32(AddPurchaseOrder.addPurchaseOrder.p_code.Text) + "," +
-                    Convert.ToInt32(AddPurchaseOrder.addPurchaseOrder.del_date.Value.ToShortDateString().Replace("/", "")) +");"
-                    , connection);
+           SQLiteCommand command = new SQLiteCommand(
+                "INSERT INTO \"Purchase Orders\" " +
+                "(PONumber, PODate, qty, POValue, fk_productid, TBDDate) " +
+                "VALUES (@poNumber, @poDate, @qty, @poValue, @productId, @tbdDate);",
+                connection);
+
+            command.Parameters.AddWithValue(
+                "@poNumber",
+                GetPONumber());
+            command.Parameters.AddWithValue(
+                "@poDate",
+                Convert.ToInt32(
+                    AddPurchaseOrder.addPurchaseOrder.po_date.Value
+                        .ToShortDateString()
+                        .Replace("/", "")));
+            command.Parameters.AddWithValue(
+                "@qty",
+                Convert.ToInt32(AddPurchaseOrder.addPurchaseOrder.qty.Text));
+            command.Parameters.AddWithValue(
+                "@poValue",
+                Convert.ToDecimal(AddPurchaseOrder.addPurchaseOrder.o_val.Text));
+            command.Parameters.AddWithValue(
+                "@productId",
+                Convert.ToInt32(AddPurchaseOrder.addPurchaseOrder.p_code.Text));
+            command.Parameters.AddWithValue(
+                "@tbdDate",
+                Convert.ToInt32(
+                    AddPurchaseOrder.addPurchaseOrder.del_date.Value
+                        .ToShortDateString()
+                        .Replace("/", "")));
+
             command.ExecuteNonQuery();
-            SQLiteCommand cmd2 = new SQLiteCommand("Update product " +
-                "Set qty = " + AddPurchaseOrder.addPurchaseOrder.new_stock + 
-                ", onorder = " + 1 +
-                ", OnOrderQty = " + Convert.ToInt32(AddPurchaseOrder.addPurchaseOrder.qty.Text) + 
-                ", deliverydate =  " + Convert.ToInt32(AddPurchaseOrder.addPurchaseOrder.del_date.Value.ToShortDateString().Replace("/", "")) +
-                " where productId = " + Convert.ToInt32(AddPurchaseOrder.addPurchaseOrder.p_code.Text) + ";", connection);
+
+            SQLiteCommand cmd2 = new SQLiteCommand(
+                "UPDATE Product SET " +
+                "Qty = @qty, " +
+                "OnOrder = @onOrder, " +
+                "OnOrderQty = @onOrderQty, " +
+                "DeliveryDate = @deliveryDate " +
+                "WHERE ProductId = @productId;",
+                connection);
+
+            cmd2.Parameters.AddWithValue(
+                "@qty",
+                AddPurchaseOrder.addPurchaseOrder.new_stock);
+            cmd2.Parameters.AddWithValue(
+                "@onOrder",
+                1);
+            cmd2.Parameters.AddWithValue(
+                "@onOrderQty",
+                Convert.ToInt32(AddPurchaseOrder.addPurchaseOrder.qty.Text));
+            cmd2.Parameters.AddWithValue(
+                "@deliveryDate",
+                Convert.ToInt32(
+                    AddPurchaseOrder.addPurchaseOrder.del_date.Value
+                        .ToShortDateString()
+                        .Replace("/", "")));
+            cmd2.Parameters.AddWithValue(
+                "@productId",
+                Convert.ToInt32(AddPurchaseOrder.addPurchaseOrder.p_code.Text));
+
             cmd2.ExecuteNonQuery();
+
             MessageBox.Show("You've succesfully placed a supplier order!");
             Orders.orders.PurchaseOrdersDataGrid.Rows.Clear();
             LoadPurchaseOrders();
@@ -236,8 +335,15 @@ namespace Digital_Shop_Software
                     foreach (DataGridViewRow item in Orders.orders.PurchaseOrdersDataGrid.SelectedRows)
                     {
                         int id = Convert.ToInt32(Orders.orders.PurchaseOrdersDataGrid.SelectedRows[0].Cells[0].Value);
-                        SQLiteCommand command = new SQLiteCommand("delete from \"Purchase Orders\" where POid = \"" + id + "\";", connection);
+                        
+                        SQLiteCommand command = new SQLiteCommand(
+                            "DELETE FROM \"Purchase Orders\" WHERE POid = @poId;",
+                            connection);
+
+                        command.Parameters.AddWithValue("@poId", id);
+
                         Orders.orders.PurchaseOrdersDataGrid.Rows.RemoveAt(Orders.orders.PurchaseOrdersDataGrid.SelectedRows[0].Index);
+                        
                         command.ExecuteNonQuery();
                     }
                 }
@@ -246,7 +352,7 @@ namespace Digital_Shop_Software
             else
             { MessageBox.Show("Please select a row in order to delete it!"); }
         }
-                public void ModifyPurchaseOrder()
+        public void ModifyPurchaseOrder()
         {
             using SQLiteConnection connection = Database.CreateConnection();
             connection.Open();
@@ -259,18 +365,30 @@ namespace Digital_Shop_Software
                 {
                     for (int item = 0; item <= Orders.orders.PurchaseOrdersDataGrid.Rows.Count - 1; item++)
                     {
-                        SQLiteCommand command = new SQLiteCommand("Update \"Purchase Orders\" set " +
+                        SQLiteCommand command = new SQLiteCommand(
+                            "UPDATE \"Purchase Orders\" SET " +
                             "podate = @poDate, " +
-                            "clientId = @clientId, " +
                             "qty = @qty, " +
-                            "POValue = @POvalue, " +
-                            "TBDDate = @TBDDate, " +
-                            "where poid = @poid;", connection);
-                        command.Parameters.AddWithValue("@poid", Orders.orders.PurchaseOrdersDataGrid.Rows[item].Cells[0].Value);
-                        command.Parameters.AddWithValue("@poDate", Orders.orders.PurchaseOrdersDataGrid.Rows[item].Cells[2].Value);
-                        command.Parameters.AddWithValue("@qty", Orders.orders.PurchaseOrdersDataGrid.Rows[item].Cells[4].Value);
-                        command.Parameters.AddWithValue("@POvalue", Orders.orders.PurchaseOrdersDataGrid.Rows[item].Cells[6].Value);
-                        command.Parameters.AddWithValue("@TBDDate", Orders.orders.PurchaseOrdersDataGrid.Rows[item].Cells[7].Value);
+                            "POValue = @poValue, " +
+                            "TBDDate = @tbdDate " +
+                            "WHERE poid = @poId;",
+                            connection);
+                        command.Parameters.AddWithValue(
+                            "@poId",
+                            Orders.orders.PurchaseOrdersDataGrid.Rows[item].Cells[0].Value);
+                        command.Parameters.AddWithValue(
+                            "@poDate",
+                            Orders.orders.PurchaseOrdersDataGrid.Rows[item].Cells[2].Value);
+                        command.Parameters.AddWithValue(
+                            "@qty",
+                            Orders.orders.PurchaseOrdersDataGrid.Rows[item].Cells[4].Value);
+                        command.Parameters.AddWithValue(
+                            "@poValue",
+                            Orders.orders.PurchaseOrdersDataGrid.Rows[item].Cells[6].Value);
+                        command.Parameters.AddWithValue(
+                            "@tbdDate",
+                            Orders.orders.PurchaseOrdersDataGrid.Rows[item].Cells[7].Value);
+                            
                         command.ExecuteNonQuery();
                     }
                     Orders.orders.PurchaseOrdersDataGrid.EndEdit();

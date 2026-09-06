@@ -17,6 +17,7 @@ namespace Digital_Shop_Software
         {
             using SQLiteConnection connection = Database.CreateConnection();
             connection.Open();
+
             // Loading grid view with stock data
             SQLiteCommand command = new SQLiteCommand(
                 "Select * From Product Inner Join Users on Users.UserId = Product.fk_UserId Inner Join Supplier on Supplier.SupplierId = fk_supplierId;"
@@ -50,7 +51,12 @@ namespace Digital_Shop_Software
             using SQLiteConnection connection = Database.CreateConnection();
             connection.Open();
 
-            SQLiteCommand find_Supplier = new SQLiteCommand("Select SupplierId from Supplier where SupplierName = \"" + AddStock.addStock.sup_name.Text + "\";", connection);
+            SQLiteCommand find_Supplier = new SQLiteCommand(
+                "SELECT SupplierId FROM Supplier WHERE SupplierName = @supplierName;",
+                connection);
+
+            find_Supplier.Parameters.AddWithValue("@supplierName", AddStock.addStock.sup_name.Text);
+
             using (SQLiteDataReader read = find_Supplier.ExecuteReader())
             {
                 while (read.Read())
@@ -67,23 +73,27 @@ namespace Digital_Shop_Software
             connection.Open();
 
             User user = new User();
-            SQLiteCommand command = new SQLiteCommand
-                (
-                "Insert into Product (Name, Category, Description, SupplierPrice, SalePrice, Qty, OnOrder,OnOrderQty , DeliveryDate, fk_SupplierId, fk_UserId)" +
-                "Values(\"" +
-                AddStock.addStock.p_name.Text + "\",\""+
-                AddStock.addStock.category.Text + "\",\"" +
-                AddStock.addStock.description.Text + "\"," +
-                sp_price + "," +
-                s_price + "," +
-                qty + "," +
-                onOrder + "," +
-                onOrderOty + "," +
-                del_date + "," +
-                Convert.ToInt32(GetSupplier()) + "," +
-                Convert.ToInt32(user.GetUserId()) +
-                ");", connection);
+
+            SQLiteCommand command = new SQLiteCommand(
+                "INSERT INTO Product " +
+                "(Name, Category, Description, SupplierPrice, SalePrice, Qty, OnOrder, OnOrderQty, DeliveryDate, fk_SupplierId, fk_UserId) " +
+                "VALUES (@name, @category, @supplierPrice, @salePrice, @qty, @onOrder, @onOrderQty, @deliveryDate, @supplierId, @userId);",
+                connection);
+
+            command.Parameters.AddWithValue("@name", AddStock.addStock.p_name.Text);
+            command.Parameters.AddWithValue("@category", AddStock.addStock.category.Text);
+            command.Parameters.AddWithValue("@description", AddStock.addStock.description.Text);
+            command.Parameters.AddWithValue("@supplierPrice", sp_price);
+            command.Parameters.AddWithValue("@salePrice", s_price);
+            command.Parameters.AddWithValue("@qty", qty);
+            command.Parameters.AddWithValue("@onOrder", onOrder);
+            command.Parameters.AddWithValue("@onOrderQty", onOrderOty);
+            command.Parameters.AddWithValue("@deliveryDate", del_date);
+            command.Parameters.AddWithValue("@supplierId", Convert.ToInt32(GetSupplier()));
+            command.Parameters.AddWithValue("@userId", Convert.ToInt32(user.GetUserId()));
+
             command.ExecuteNonQuery();
+
             Stock.stock.StockDataGrid.Rows.Clear();
             LoadStock();
         }
@@ -222,8 +232,15 @@ namespace Digital_Shop_Software
                     foreach (DataGridViewRow item in Stock.stock.StockDataGrid.SelectedRows)
                     {
                         int id = Convert.ToInt32(Stock.stock.StockDataGrid.SelectedRows[0].Cells[0].Value);
-                        SQLiteCommand command = new SQLiteCommand("delete from product where productid = \"" + id + "\";", connection);
+                        
+                        SQLiteCommand command = new SQLiteCommand(
+                            "DELETE FROM Product WHERE ProductId = @productId;",
+                            connection);
+
+                        command.Parameters.AddWithValue("@productId", id);
+
                         Stock.stock.StockDataGrid.Rows.RemoveAt(Stock.stock.StockDataGrid.SelectedRows[0].Index);
+
                         command.ExecuteNonQuery();
                     }
                 }

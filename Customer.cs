@@ -11,7 +11,7 @@ namespace Digital_Shop_Software
             using SQLiteConnection connection = Database.CreateConnection();
             connection.Open();
 
-            SQLiteCommand command = new SQLiteCommand("Select * From Client Inner Join Users on Users.UserID = Client.UserId;", connection);
+            SQLiteCommand command = new SQLiteCommand("SELECT * FROM CLIENT INNER JOIN USERS ON USERS.USERID = CLIENT.USERID;", connection);
             using (SQLiteDataReader read = command.ExecuteReader())
             {
                 while (read.Read())
@@ -41,16 +41,20 @@ namespace Digital_Shop_Software
             if (AddCustomer.addCustomer.checkBox1.Checked)
             {
                 SQLiteCommand command = new SQLiteCommand(
-                    "Insert into Client ( Email, PhoneNumber, Registered, OrderDate, LastOrder, UserId)" +
-                    "Values(\"" +
-                    AddCustomer.addCustomer.email.Text + "\",\"" +
-                    AddCustomer.addCustomer.ph_num.Text + "\"," +
-                    Convert.ToInt32(AddCustomer.addCustomer.reg.Text) + "," +
-                    ConvertToDate() + "," +
-                    order_date + "," +
-                    Convert.ToInt32(user.GetUserId()) +
-                    ");", connection);
+                    "INSERT INTO Client " +
+                    "(Email, PhoneNumber, Registered, OrderDate, LastOrder, UserId) " +
+                    "VALUES (@email, @phoneNumber, @registered, @orderDate, @lastOrder, @userId);",
+                    connection);
+
+                command.Parameters.AddWithValue("@email", AddCustomer.addCustomer.email.Text);
+                command.Parameters.AddWithValue("@phoneNumber", AddCustomer.addCustomer.ph_num.Text);
+                command.Parameters.AddWithValue("@registered", Convert.ToInt32(AddCustomer.addCustomer.reg.Text));
+                command.Parameters.AddWithValue("@orderDate", ConvertToDate());
+                command.Parameters.AddWithValue("@lastOrder", order_date);
+                command.Parameters.AddWithValue("@userId", Convert.ToInt32(user.GetUserId()));
+
                 command.ExecuteNonQuery();
+
                 MessageBox.Show("You've succesfully added a new customer into the customer list!");
                 Customers.customers.CustomerDataGrid.Rows.Clear();
                 LoadCustomers();
@@ -60,15 +64,18 @@ namespace Digital_Shop_Software
             else
             {
                 SQLiteCommand command = new SQLiteCommand(
-                    "Insert into Client ( Email, PhoneNumber, Registered, OrderDate, LastOrder, UserId)" +
-                    "Values(\"" +
-                    AddCustomer.addCustomer.email.Text + "\",\"" +
-                    AddCustomer.addCustomer.ph_num.Text + "\"," +
-                    Convert.ToInt32(AddCustomer.addCustomer.reg.Text) + "," +
-                    order_date + "," +
-                    order_date + "," +
-                    Convert.ToInt32(user.GetUserId()) +
-                    ");", connection);
+                    "INSERT INTO Client " +
+                    "(Email, PhoneNumber, Registered, OrderDate, LastOrder, UserId) " +
+                    "VALUES (@email, @phoneNumber, @registered, @orderDate, @lastOrder, @userId);",
+                    connection);
+
+                command.Parameters.AddWithValue("@email", AddCustomer.addCustomer.email.Text);
+                command.Parameters.AddWithValue("@phoneNumber", AddCustomer.addCustomer.ph_num.Text);
+                command.Parameters.AddWithValue("@registered", Convert.ToInt32(AddCustomer.addCustomer.reg.Text));
+                command.Parameters.AddWithValue("@orderDate", order_date);
+                command.Parameters.AddWithValue("@lastOrder", order_date);
+                command.Parameters.AddWithValue("@userId", Convert.ToInt32(user.GetUserId()));
+
                 command.ExecuteNonQuery();
                 MessageBox.Show("You've succesfully added a new customer into the customer list!");
                 try
@@ -83,7 +90,7 @@ namespace Digital_Shop_Software
                     AddClientOrder.addClientOrder.new_client = false;
                     AddClientOrder.addClientOrder.clientid.Items.Clear();
                     SQLiteCommand cmd = new SQLiteCommand(
-                        "Select * From client;", connection);
+                        "SELECT * FROM CLIENT;", connection);
                     using (SQLiteDataReader read = cmd.ExecuteReader())
                     {
                         while (read.Read())
@@ -139,8 +146,14 @@ namespace Digital_Shop_Software
                     foreach (DataGridViewRow item in Customers.customers.CustomerDataGrid.SelectedRows)
                     {
                         int id = Convert.ToInt32(Customers.customers.CustomerDataGrid.SelectedRows[0].Cells[0].Value);
-                        SQLiteCommand command = new SQLiteCommand("delete from client where clientid = \"" + id + "\";", connection);
+                        SQLiteCommand command = new SQLiteCommand(
+                            "DELETE FROM Client WHERE ClientId = @clientId;",
+                            connection);
+
+                        command.Parameters.AddWithValue("@clientId", id);
+
                         Customers.customers.CustomerDataGrid.Rows.RemoveAt(Customers.customers.CustomerDataGrid.SelectedRows[0].Index);
+                        
                         command.ExecuteNonQuery();
                     }
                 }
@@ -161,7 +174,7 @@ namespace Digital_Shop_Software
             {
                 for (int item = 0; item <= Customers.customers.CustomerDataGrid.Rows.Count - 1; item++)
                 {
-                    SQLiteCommand command = new SQLiteCommand("Update Client set " +
+                    SQLiteCommand command = new SQLiteCommand("UPDATE CLIENT SET " +
                         "email = @email, " +
                         "phonenumber = @phonenumber, " +
                         "registered = @registered, " +

@@ -21,7 +21,7 @@ namespace Digital_Shop_Software
             connection.Open();
 
             SQLiteCommand command = new SQLiteCommand(
-               "Select * From Product;", connection);
+               "SELECT * FROM PRODUCT;", connection);
             using (SQLiteDataReader read = command.ExecuteReader())
             {
                 while (read.Read())
@@ -34,7 +34,7 @@ namespace Digital_Shop_Software
                 }
             }
             SQLiteCommand cmd = new SQLiteCommand(
-               "Select * From client;", connection);
+               "SELECT * FROM CLIENT;", connection);
             using (SQLiteDataReader read = cmd.ExecuteReader())
             {
                 while (read.Read())
@@ -79,7 +79,11 @@ namespace Digital_Shop_Software
             connection.Open();
 
             SQLiteCommand command = new SQLiteCommand(
-               "Select * From Product where ProductId = " + Convert.ToInt32(p_code.Text) + ";", connection);
+                "SELECT * FROM Product WHERE ProductId = @productId;",
+                connection);
+
+            command.Parameters.AddWithValue("@productId", Convert.ToInt32(p_code.Text));
+            
             using (SQLiteDataReader read = command.ExecuteReader())
             {
                 while (read.Read())

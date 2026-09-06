@@ -17,7 +17,7 @@ namespace Digital_Shop_Software
 
             // Searching for supplier names
             SQLiteCommand command = new SQLiteCommand(
-               "Select * From Supplier;", connection);
+               "SELECT * FROM SUPPLIER;", connection);
             using (SQLiteDataReader read = command.ExecuteReader())
             {
                 while (read.Read())

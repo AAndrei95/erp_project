@@ -131,11 +131,16 @@ namespace Digital_Shop_Software
             
             if (!string.IsNullOrEmpty(new_pass) && new_pass != db_old_pass && new_pass == new_pass_conf)
             {
-                string db_set_pass = "UPDATE Users SET Password = " + "\"" + new_pass + "\"" + " where Username = \"" + username + "\";";
+                string db_set_pass =
+                    "UPDATE Users SET Password = @password WHERE Username = @username;";
                 SQLiteCommand command = new SQLiteCommand(db_set_pass, connection);
-                SQLiteDataReader reader = command.ExecuteReader();
+
+                command.Parameters.AddWithValue("@password", new_pass);
+                command.Parameters.AddWithValue("@username", username);
+
+                command.ExecuteNonQuery();
+
                 MessageBox.Show("Your password has been changed!");
-                //Database.instance.Close();
                 ResetPassword.r_pass.Close();
                 Login.login.BringToFront();
             }
@@ -238,6 +243,7 @@ namespace Digital_Shop_Software
                 }
             }
         }
+
         public string GetUserId()
         {
             using SQLiteConnection connection = Database.CreateConnection();
@@ -265,23 +271,29 @@ namespace Digital_Shop_Software
             connection.Open();
 
             SQLiteCommand command = new SQLiteCommand(
-                "Insert into Users ( Position, Username, Password, DoB, Sex, Email, PhoneNumber, SecurityQuestion, SQAnswer)" +
-                "Values (\"" +
-                AddUser.addUser.pos.Text + "\",\"" +
-                AddUser.addUser.uName.Text + "\",\"" +
-                AddUser.addUser.pass.Text + "\",\"" +
-                ConvertToDate() + "\",\"" +
-                AddUser.addUser.sex.Text + "\",\"" +
-                AddUser.addUser.email.Text + "\",\"" +
-                AddUser.addUser.ph_num.Text + "\",\"" +
-                AddUser.addUser.sq.Text + "\",\"" +
-                AddUser.addUser.sqa.Text + "\");", connection);
+                "INSERT INTO Users " +
+                "(Position, Username, Password, DoB, Sex, Email, PhoneNumber, SecurityQuestion, SQAnswer) " +
+                "VALUES (@position, @username, @password, @dob, @sex, @email, @phoneNumber, @securityQuestion, @sqAnswer);",
+                connection);
+
+            command.Parameters.AddWithValue("@position", AddUser.addUser.pos.Text);
+            command.Parameters.AddWithValue("@username", AddUser.addUser.uName.Text);
+            command.Parameters.AddWithValue("@password", AddUser.addUser.pass.Text);
+            command.Parameters.AddWithValue("@dob", ConvertToDate());
+            command.Parameters.AddWithValue("@sex", AddUser.addUser.sex.Text);
+            command.Parameters.AddWithValue("@email", AddUser.addUser.email.Text);
+            command.Parameters.AddWithValue("@phoneNumber", AddUser.addUser.ph_num.Text);
+            command.Parameters.AddWithValue("@securityQuestion", AddUser.addUser.sq.Text);
+            command.Parameters.AddWithValue("@sqAnswer", AddUser.addUser.sqa.Text);
+
             command.ExecuteNonQuery();
+
             MessageBox.Show("You've succesfully added a new user into the user list!");
             Users.users.UsersDataGrid.Rows.Clear();
             GetPosition(Login.login.Username.Text);
             AddUser.addUser.Close();
         }
+
         // Method that checks is the marked fields are completed
         public void CheckAddUsers()
         {
@@ -334,8 +346,16 @@ namespace Digital_Shop_Software
                     foreach (DataGridViewRow item in Users.users.UsersDataGrid.SelectedRows)
                     {
                         int id = Convert.ToInt32(Users.users.UsersDataGrid.SelectedRows[0].Cells[0].Value);
-                        SQLiteCommand command = new SQLiteCommand("delete from users where userid = \"" + id + "\";", connection);
-                        Users.users.UsersDataGrid.Rows.RemoveAt(Users.users.UsersDataGrid.SelectedRows[0].Index);
+
+                        SQLiteCommand command = new SQLiteCommand(
+                            "DELETE FROM Users WHERE UserId = @userId;",
+                            connection);
+
+                        command.Parameters.AddWithValue("@userId", id);
+
+                        Users.users.UsersDataGrid.Rows.RemoveAt(
+                            Users.users.UsersDataGrid.SelectedRows[0].Index);
+
                         command.ExecuteNonQuery();
                     }
                 }
@@ -364,6 +384,7 @@ namespace Digital_Shop_Software
                         "phonenumber = @phoneNumber, " +
                         "SecurityQuestion = @SecurityQuestion, " +
                         "SQAnswer = @SQAnswer where userid = @userid;", connection);
+
                     command.Parameters.AddWithValue("@userid", Users.users.UsersDataGrid.Rows[item].Cells[0].Value);
                     command.Parameters.AddWithValue("@position", Users.users.UsersDataGrid.Rows[item].Cells[1].Value);
                     command.Parameters.AddWithValue("@username", Users.users.UsersDataGrid.Rows[item].Cells[2].Value);
@@ -374,6 +395,7 @@ namespace Digital_Shop_Software
                     command.Parameters.AddWithValue("@phoneNumber", Users.users.UsersDataGrid.Rows[item].Cells[7].Value);
                     command.Parameters.AddWithValue("@SecurityQuestion", Users.users.UsersDataGrid.Rows[item].Cells[8].Value);
                     command.Parameters.AddWithValue("@SQAnswer", Users.users.UsersDataGrid.Rows[item].Cells[9].Value);
+                    
                     command.ExecuteNonQuery();
                 }
                 Users.users.UsersDataGrid.EndEdit();

@@ -35,16 +35,21 @@ namespace Digital_Shop_Software
             connection.Open();
 
             Supplier supplier = new Supplier();
+
             SQLiteCommand command = new SQLiteCommand(
-                "Insert Into Supplier (SupplierName, Description, Email, PhoneNumber, Representative)" +
-                "Values (\"" + 
-                AddSupplier.addSupplier.s_name.Text + "\",\"" +
-                AddSupplier.addSupplier.desc.Text + "\",\"" +
-                AddSupplier.addSupplier.email.Text + "\",\"" +
-                AddSupplier.addSupplier.ph_num.Text + "\",\"" +
-                AddSupplier.addSupplier.rep.Text +
-                "\");", connection);
+                "INSERT INTO Supplier " +
+                "(SupplierName, Description, Email, PhoneNumber, Representative) " +
+                "VALUES (@supplierName, @description, @email, @phoneNumber, @representative);",
+                connection);
+
+            command.Parameters.AddWithValue("@supplierName", AddSupplier.addSupplier.s_name.Text);
+            command.Parameters.AddWithValue("@description", AddSupplier.addSupplier.desc.Text);
+            command.Parameters.AddWithValue("@email", AddSupplier.addSupplier.email.Text);
+            command.Parameters.AddWithValue("@phoneNumber", AddSupplier.addSupplier.ph_num.Text);
+            command.Parameters.AddWithValue("@representative", AddSupplier.addSupplier.rep.Text);
+
             command.ExecuteNonQuery();
+
             Suppliers.suppliers.SupplierDataGrid.Rows.Clear();
             supplier.LoadSuppliers();
             MessageBox.Show("You've succesfully added a new supplier into the supplier list!");
@@ -87,8 +92,15 @@ namespace Digital_Shop_Software
                     foreach (DataGridViewRow item in Suppliers.suppliers.SupplierDataGrid.SelectedRows)
                     {
                         int id = Convert.ToInt32(Suppliers.suppliers.SupplierDataGrid.SelectedRows[0].Cells[0].Value);
-                        SQLiteCommand command = new SQLiteCommand("delete from supplier where supplierid = \"" + id + "\";", connection);
+
+                        SQLiteCommand command = new SQLiteCommand(
+                            "DELETE FROM Supplier WHERE SupplierId = @supplierId;",
+                            connection);
+
+                        command.Parameters.AddWithValue("@supplierId", id);
+
                         Suppliers.suppliers.SupplierDataGrid.Rows.RemoveAt(Suppliers.suppliers.SupplierDataGrid.SelectedRows[0].Index);
+
                         command.ExecuteNonQuery();
                     }
                 }
@@ -107,20 +119,35 @@ namespace Digital_Shop_Software
             {
                 for (int item = 0; item <= Suppliers.suppliers.SupplierDataGrid.Rows.Count - 1; item++)
                 {
-                    SQLiteCommand command = new SQLiteCommand("Update Supplier set " +
+                   SQLiteCommand command = new SQLiteCommand(
+                        "UPDATE Supplier SET " +
                         "SupplierName = @supplierName, " +
-                        "description = @description, " +
-                        "email = @email, " +
-                        "phonenumber = @phoneNumber, " +
-                        "Representative = representative " +
-                        "where SupplierId = @SupplierId;", connection);
-                    command.Parameters.AddWithValue("@SupplierId", Suppliers.suppliers.SupplierDataGrid.Rows[item].Cells[0].Value);
-                    command.Parameters.AddWithValue("@supplierName", Suppliers.suppliers.SupplierDataGrid.Rows[item].Cells[1].Value);
-                    command.Parameters.AddWithValue("@description", Suppliers.suppliers.SupplierDataGrid.Rows[item].Cells[2].Value);
-                    command.Parameters.AddWithValue("@email", Suppliers.suppliers.SupplierDataGrid.Rows[item].Cells[3].Value);
-                    command.Parameters.AddWithValue("@phoneNumber", Suppliers.suppliers.SupplierDataGrid.Rows[item].Cells[4].Value);
-                    command.Parameters.AddWithValue("@representative", Suppliers.suppliers.SupplierDataGrid.Rows[item].Cells[5].Value);
-                    command.Parameters.AddWithValue("@representative", Suppliers.suppliers.SupplierDataGrid.Rows[item].Cells[6].Value);
+                        "Description = @description, " +
+                        "Email = @email, " +
+                        "PhoneNumber = @phoneNumber, " +
+                        "Representative = @representative " +
+                        "WHERE SupplierId = @supplierId;",
+                        connection);
+
+                    command.Parameters.AddWithValue(
+                        "@supplierId",
+                        Suppliers.suppliers.SupplierDataGrid.Rows[item].Cells[0].Value);
+                    command.Parameters.AddWithValue(
+                        "@supplierName",
+                        Suppliers.suppliers.SupplierDataGrid.Rows[item].Cells[1].Value);
+                    command.Parameters.AddWithValue(
+                        "@description",
+                        Suppliers.suppliers.SupplierDataGrid.Rows[item].Cells[2].Value);
+                    command.Parameters.AddWithValue(
+                        "@email",
+                        Suppliers.suppliers.SupplierDataGrid.Rows[item].Cells[3].Value);
+                    command.Parameters.AddWithValue(
+                        "@phoneNumber",
+                        Suppliers.suppliers.SupplierDataGrid.Rows[item].Cells[4].Value);
+                    command.Parameters.AddWithValue(
+                        "@representative",
+                        Suppliers.suppliers.SupplierDataGrid.Rows[item].Cells[5].Value);
+                        
                     command.ExecuteNonQuery();
                 }
                 Suppliers.suppliers.SupplierDataGrid.EndEdit();
