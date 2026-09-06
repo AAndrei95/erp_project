@@ -18,7 +18,9 @@ namespace Digital_Shop_Software
             var db_password = "";
             // Setting the command
             string db_user = "Select Username, Password from Users where Username =@username;";
+
             SQLiteCommand command = new SQLiteCommand(db_user, connection);
+
             command.Parameters.AddWithValue("@username", username);
             // Executing the command
             using (SQLiteDataReader reader = command.ExecuteReader())
@@ -38,29 +40,22 @@ namespace Digital_Shop_Software
                 }
                 // If the username exist call method CheckPassword
                 else
-                {
-                    CheckPassword(password, db_password);
-                }
-            }
-        }
+                if (PasswordHasher.VerifyPassword(password, db_password))
+                    {
+                        MainMenu menu = new MainMenu();
+                        menu.Show();
 
-        // Method that checks if the user input (password) matches database record
-        public void CheckPassword(string password, string db_password)
-        {
-            // If the password is matching close SQL connection and open Main Menu 
-            if (password == db_password)
-            {
-                MainMenu menu = new MainMenu();
-                menu.Show();
-                MessageBox.Show("Login Succesful!\nWelcome " + Login.login.Username.Text);
-                Login.login.Password.Clear();
-                Login.login.Hide();
-            }
-            // Else clear password textbox and show message
-            else
-            {
-                Login.login.Password.Clear();
-                MessageBox.Show("Wrong password!");
+                        MessageBox.Show(
+                            "Login Succesful!\nWelcome " + Login.login.Username.Text);
+
+                        Login.login.Password.Clear();
+                        Login.login.Hide();
+                    }
+                    else
+                    {
+                        MessageBox.Show("Wrong password!");
+                        Login.login.Password.Clear();
+                    }
             }
         }
 
@@ -76,7 +71,9 @@ namespace Digital_Shop_Software
             var db_old_pass = "";
             // Setting the command
             string db_get_answer = "Select Username, SQAnswer, Password from Users where Username = @username;";
+
             SQLiteCommand command = new SQLiteCommand(db_get_answer, connection);
+
             command.Parameters.AddWithValue("@username", username);
             // Executing the command
             using (SQLiteDataReader reader = command.ExecuteReader())
@@ -106,7 +103,13 @@ namespace Digital_Shop_Software
         }
 
         // Method that checks if the security question answer is correct
-        public void CheckSQAnswer(string sq_answer, string db_sq_answer, string new_pass, string new_pass_conf, string username, string db_old_pass)
+        public void CheckSQAnswer(
+            string sq_answer,
+            string db_sq_answer,
+            string new_pass,
+            string new_pass_conf,
+            string username,
+            string db_old_pass)
         {
             // If incorrect answer
             if (sq_answer != db_sq_answer || sq_answer == "")
@@ -275,10 +278,12 @@ namespace Digital_Shop_Software
                 "(Position, Username, Password, DoB, Sex, Email, PhoneNumber, SecurityQuestion, SQAnswer) " +
                 "VALUES (@position, @username, @password, @dob, @sex, @email, @phoneNumber, @securityQuestion, @sqAnswer);",
                 connection);
+            
+            string hashedPassword = PasswordHasher.HashPassword(AddUser.addUser.pass.Text);
 
             command.Parameters.AddWithValue("@position", AddUser.addUser.pos.Text);
             command.Parameters.AddWithValue("@username", AddUser.addUser.uName.Text);
-            command.Parameters.AddWithValue("@password", AddUser.addUser.pass.Text);
+            command.Parameters.AddWithValue("@password", hashedPassword);
             command.Parameters.AddWithValue("@dob", ConvertToDate());
             command.Parameters.AddWithValue("@sex", AddUser.addUser.sex.Text);
             command.Parameters.AddWithValue("@email", AddUser.addUser.email.Text);
@@ -353,8 +358,7 @@ namespace Digital_Shop_Software
 
                         command.Parameters.AddWithValue("@userId", id);
 
-                        Users.users.UsersDataGrid.Rows.RemoveAt(
-                            Users.users.UsersDataGrid.SelectedRows[0].Index);
+                        Users.users.UsersDataGrid.Rows.RemoveAt(Users.users.UsersDataGrid.SelectedRows[0].Index);
 
                         command.ExecuteNonQuery();
                     }

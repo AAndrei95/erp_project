@@ -11,7 +11,10 @@ namespace Digital_Shop_Software
             using SQLiteConnection connection = Database.CreateConnection();
             connection.Open();
 
-            SQLiteCommand command = new SQLiteCommand("SELECT * FROM CLIENT INNER JOIN USERS ON USERS.USERID = CLIENT.USERID;", connection);
+            SQLiteCommand command = new SQLiteCommand(
+                "SELECT * FROM CLIENT INNER JOIN USERS ON USERS.USERID = CLIENT.USERID;",
+                connection);
+
             using (SQLiteDataReader read = command.ExecuteReader())
             {
                 while (read.Read())
@@ -89,8 +92,11 @@ namespace Digital_Shop_Software
                 {
                     AddClientOrder.addClientOrder.new_client = false;
                     AddClientOrder.addClientOrder.clientid.Items.Clear();
+
                     SQLiteCommand cmd = new SQLiteCommand(
-                        "SELECT * FROM CLIENT;", connection);
+                        "SELECT * FROM CLIENT;",
+                        connection);
+
                     using (SQLiteDataReader read = cmd.ExecuteReader())
                     {
                         while (read.Read())
@@ -146,6 +152,7 @@ namespace Digital_Shop_Software
                     foreach (DataGridViewRow item in Customers.customers.CustomerDataGrid.SelectedRows)
                     {
                         int id = Convert.ToInt32(Customers.customers.CustomerDataGrid.SelectedRows[0].Cells[0].Value);
+
                         SQLiteCommand command = new SQLiteCommand(
                             "DELETE FROM Client WHERE ClientId = @clientId;",
                             connection);
@@ -182,6 +189,7 @@ namespace Digital_Shop_Software
                         "lastorder = @lastOrder, " +
                         "userid = @userid " +
                         "where clientid = @clientid;", connection);
+
                     command.Parameters.AddWithValue("@clientid", Customers.customers.CustomerDataGrid.Rows[item].Cells[0].Value);
                     command.Parameters.AddWithValue("@email", Customers.customers.CustomerDataGrid.Rows[item].Cells[1].Value);
                     command.Parameters.AddWithValue("@phonenumber", Customers.customers.CustomerDataGrid.Rows[item].Cells[2].Value);
@@ -189,6 +197,7 @@ namespace Digital_Shop_Software
                     command.Parameters.AddWithValue("@orderDate", Customers.customers.CustomerDataGrid.Rows[item].Cells[4].Value);
                     command.Parameters.AddWithValue("@lastOrder", Customers.customers.CustomerDataGrid.Rows[item].Cells[5].Value);
                     command.Parameters.AddWithValue("@userid", user.GetUserId());
+                    
                     command.ExecuteNonQuery();
                 }
                 Customers.customers.CustomerDataGrid.EndEdit();

@@ -11,8 +11,11 @@ namespace Digital_Shop_Software
 
             // Loads client orders into grid view
             SQLiteCommand command = new SQLiteCommand(
-                "SELECT * FROM \"Client Orders\" INNER JOIN Client ON Client.ClientId = \"Client Orders\".fk_ClientId INNER JOIN Product ON Product.ProductId = \"Client Orders\".fk_ProductId;"
-                , connection);
+                "SELECT * FROM \"Client Orders\" " +
+                "INNER JOIN Client ON Client.ClientId = \"Client Orders\".fk_ClientId " +
+                "INNER JOIN Product ON Product.ProductId = \"Client Orders\".fk_ProductId;",
+                connection);
+                
             using (SQLiteDataReader read = command.ExecuteReader())
             {
                 while (read.Read())
@@ -39,8 +42,9 @@ namespace Digital_Shop_Software
 
             // Loads purchase orders into grid view
             SQLiteCommand command = new SQLiteCommand(
-                "SELECT * FROM \"Purchase Orders\" INNER JOIN Product ON Product.ProductId = \"Purchase Orders\".fk_ProductId;"
-                , connection);
+                "SELECT * FROM \"Purchase Orders\" INNER JOIN Product ON Product.ProductId = \"Purchase Orders\".fk_ProductId;",
+                connection);
+
             using (SQLiteDataReader read = command.ExecuteReader())
             {
                 while (read.Read())
@@ -67,25 +71,18 @@ namespace Digital_Shop_Software
 
             // Add customer order in database and gridview
             Customer customer = new Customer();
+
             SQLiteCommand command = new SQLiteCommand(
                 "INSERT INTO \"Client Orders\" " +
                 "(OrderQty, fk_clientId, fk_productId, Value) " +
                 "VALUES (@orderQty, @clientId, @productId, @value);",
                 connection);
 
-            command.Parameters.AddWithValue(
-                "@orderQty",
-                Convert.ToInt32(AddClientOrder.addClientOrder.qty.Text));
-            command.Parameters.AddWithValue(
-                "@clientId",
-                Convert.ToInt32(AddClientOrder.addClientOrder.clientid.Text));
-            command.Parameters.AddWithValue(
-                "@productId",
-                Convert.ToInt32(AddClientOrder.addClientOrder.p_code.Text));
-            command.Parameters.AddWithValue(
-                "@value",
-                Convert.ToDecimal(AddClientOrder.addClientOrder.o_val.Text));
-
+            command.Parameters.AddWithValue("@orderQty", Convert.ToInt32(AddClientOrder.addClientOrder.qty.Text));
+            command.Parameters.AddWithValue("@clientId", Convert.ToInt32(AddClientOrder.addClientOrder.clientid.Text));
+            command.Parameters.AddWithValue("@productId", Convert.ToInt32(AddClientOrder.addClientOrder.p_code.Text));
+            command.Parameters.AddWithValue("@value", Convert.ToDecimal(AddClientOrder.addClientOrder.o_val.Text));
+               
             command.ExecuteNonQuery();
 
             SQLiteCommand cmd = new SQLiteCommand(
@@ -98,9 +95,7 @@ namespace Digital_Shop_Software
                     AddClientOrder.addClientOrder.order_date.Value
                         .ToShortDateString()
                         .Replace("/", "")));
-            cmd.Parameters.AddWithValue(
-                "@clientId",
-                Convert.ToInt32(AddClientOrder.addClientOrder.clientid.Text));
+            cmd.Parameters.AddWithValue("@clientId", Convert.ToInt32(AddClientOrder.addClientOrder.clientid.Text));
 
             cmd.ExecuteNonQuery();
 
@@ -108,12 +103,8 @@ namespace Digital_Shop_Software
                 "UPDATE Product SET Qty = @qty WHERE ProductId = @productId;",
                 connection);
 
-            cmd2.Parameters.AddWithValue(
-                "@qty",
-                AddClientOrder.addClientOrder.sold_qty);
-            cmd2.Parameters.AddWithValue(
-                "@productId",
-                 Convert.ToInt32(AddClientOrder.addClientOrder.p_code.Text));
+            cmd2.Parameters.AddWithValue("@qty", AddClientOrder.addClientOrder.sold_qty);                           
+            cmd2.Parameters.AddWithValue("@productId", Convert.ToInt32(AddClientOrder.addClientOrder.p_code.Text));    
 
             cmd2.ExecuteNonQuery();
             
@@ -150,8 +141,7 @@ namespace Digital_Shop_Software
                     // For each row selected in the datagrid delete the matching row in the database
                     foreach (DataGridViewRow item in Orders.orders.ClientOrderDataGrid.SelectedRows)
                     {
-                        int id = Convert.ToInt32(
-                            Orders.orders.ClientOrderDataGrid.SelectedRows[0].Cells[0].Value);
+                        int id = Convert.ToInt32(Orders.orders.ClientOrderDataGrid.SelectedRows[0].Cells[0].Value);
 
                         SQLiteCommand command = new SQLiteCommand(
                             "DELETE FROM \"Client Orders\" WHERE id = @id;",
@@ -191,19 +181,11 @@ namespace Digital_Shop_Software
                             "WHERE id = @id;",
                             connection);
 
-                        command.Parameters.AddWithValue(
-                            "@id",
-                            Orders.orders.ClientOrderDataGrid.Rows[item].Cells[0].Value);
-                        command.Parameters.AddWithValue(
-                            "@orderQty",
-                            Orders.orders.ClientOrderDataGrid.Rows[item].Cells[5].Value);
-                        command.Parameters.AddWithValue(
-                            "@clientId",
-                            Orders.orders.ClientOrderDataGrid.Rows[item].Cells[1].Value);
-                        command.Parameters.AddWithValue(
-                            "@Value",
-                            Orders.orders.ClientOrderDataGrid.Rows[item].Cells[6].Value);
-
+                        command.Parameters.AddWithValue( "@id", Orders.orders.ClientOrderDataGrid.Rows[item].Cells[0].Value);                         
+                        command.Parameters.AddWithValue("@orderQty", Orders.orders.ClientOrderDataGrid.Rows[item].Cells[5].Value);                           
+                        command.Parameters.AddWithValue("@clientId", Orders.orders.ClientOrderDataGrid.Rows[item].Cells[1].Value);                     
+                        command.Parameters.AddWithValue("@Value", Orders.orders.ClientOrderDataGrid.Rows[item].Cells[6].Value);
+                                                        
                         command.ExecuteNonQuery();
                     }
                     Orders.orders.ClientOrderDataGrid.EndEdit();
@@ -227,24 +209,16 @@ namespace Digital_Shop_Software
                 "VALUES (@poNumber, @poDate, @qty, @poValue, @productId, @tbdDate);",
                 connection);
 
-            command.Parameters.AddWithValue(
-                "@poNumber",
-                GetPONumber());
+            command.Parameters.AddWithValue("@poNumber", GetPONumber());
             command.Parameters.AddWithValue(
                 "@poDate",
                 Convert.ToInt32(
                     AddPurchaseOrder.addPurchaseOrder.po_date.Value
                         .ToShortDateString()
                         .Replace("/", "")));
-            command.Parameters.AddWithValue(
-                "@qty",
-                Convert.ToInt32(AddPurchaseOrder.addPurchaseOrder.qty.Text));
-            command.Parameters.AddWithValue(
-                "@poValue",
-                Convert.ToDecimal(AddPurchaseOrder.addPurchaseOrder.o_val.Text));
-            command.Parameters.AddWithValue(
-                "@productId",
-                Convert.ToInt32(AddPurchaseOrder.addPurchaseOrder.p_code.Text));
+            command.Parameters.AddWithValue("@qty", Convert.ToInt32(AddPurchaseOrder.addPurchaseOrder.qty.Text));   
+            command.Parameters.AddWithValue("@poValue", Convert.ToDecimal(AddPurchaseOrder.addPurchaseOrder.o_val.Text));              
+            command.Parameters.AddWithValue("@productId", Convert.ToInt32(AddPurchaseOrder.addPurchaseOrder.p_code.Text));            
             command.Parameters.AddWithValue(
                 "@tbdDate",
                 Convert.ToInt32(
@@ -263,24 +237,16 @@ namespace Digital_Shop_Software
                 "WHERE ProductId = @productId;",
                 connection);
 
-            cmd2.Parameters.AddWithValue(
-                "@qty",
-                AddPurchaseOrder.addPurchaseOrder.new_stock);
-            cmd2.Parameters.AddWithValue(
-                "@onOrder",
-                1);
-            cmd2.Parameters.AddWithValue(
-                "@onOrderQty",
-                Convert.ToInt32(AddPurchaseOrder.addPurchaseOrder.qty.Text));
+            cmd2.Parameters.AddWithValue( "@qty",  AddPurchaseOrder.addPurchaseOrder.new_stock);
+            cmd2.Parameters.AddWithValue("@onOrder", 1);  
+            cmd2.Parameters.AddWithValue( "@onOrderQty", Convert.ToInt32(AddPurchaseOrder.addPurchaseOrder.qty.Text));   
             cmd2.Parameters.AddWithValue(
                 "@deliveryDate",
                 Convert.ToInt32(
                     AddPurchaseOrder.addPurchaseOrder.del_date.Value
                         .ToShortDateString()
                         .Replace("/", "")));
-            cmd2.Parameters.AddWithValue(
-                "@productId",
-                Convert.ToInt32(AddPurchaseOrder.addPurchaseOrder.p_code.Text));
+            cmd2.Parameters.AddWithValue("@productId", Convert.ToInt32(AddPurchaseOrder.addPurchaseOrder.p_code.Text));
 
             cmd2.ExecuteNonQuery();
 
@@ -309,7 +275,11 @@ namespace Digital_Shop_Software
             connection.Open();
 
             int PONumber = 0;
-            SQLiteCommand command = new SQLiteCommand("SELECT * FROM \"Purchase Orders\" ORDER BY PoNumber DESC LIMIT 1;", connection);
+
+            SQLiteCommand command = new SQLiteCommand(
+                "SELECT * FROM \"Purchase Orders\" ORDER BY PoNumber DESC LIMIT 1;",
+                connection);
+
             using(SQLiteDataReader read = command.ExecuteReader())
             {
                 while (read.Read())
@@ -373,22 +343,13 @@ namespace Digital_Shop_Software
                             "TBDDate = @tbdDate " +
                             "WHERE poid = @poId;",
                             connection);
-                        command.Parameters.AddWithValue(
-                            "@poId",
-                            Orders.orders.PurchaseOrdersDataGrid.Rows[item].Cells[0].Value);
-                        command.Parameters.AddWithValue(
-                            "@poDate",
-                            Orders.orders.PurchaseOrdersDataGrid.Rows[item].Cells[2].Value);
-                        command.Parameters.AddWithValue(
-                            "@qty",
-                            Orders.orders.PurchaseOrdersDataGrid.Rows[item].Cells[4].Value);
-                        command.Parameters.AddWithValue(
-                            "@poValue",
-                            Orders.orders.PurchaseOrdersDataGrid.Rows[item].Cells[6].Value);
-                        command.Parameters.AddWithValue(
-                            "@tbdDate",
-                            Orders.orders.PurchaseOrdersDataGrid.Rows[item].Cells[7].Value);
                             
+                        command.Parameters.AddWithValue("@poId", Orders.orders.PurchaseOrdersDataGrid.Rows[item].Cells[0].Value); 
+                        command.Parameters.AddWithValue("@poDate", Orders.orders.PurchaseOrdersDataGrid.Rows[item].Cells[2].Value);   
+                        command.Parameters.AddWithValue("@qty", Orders.orders.PurchaseOrdersDataGrid.Rows[item].Cells[4].Value);   
+                        command.Parameters.AddWithValue("@poValue", Orders.orders.PurchaseOrdersDataGrid.Rows[item].Cells[6].Value);  
+                        command.Parameters.AddWithValue("@tbdDate", Orders.orders.PurchaseOrdersDataGrid.Rows[item].Cells[7].Value);
+  
                         command.ExecuteNonQuery();
                     }
                     Orders.orders.PurchaseOrdersDataGrid.EndEdit();

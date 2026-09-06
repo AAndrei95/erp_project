@@ -22,7 +22,9 @@ namespace Digital_Shop_Software
             del_date.MinDate = po_date.Value;
 
             SQLiteCommand command = new SQLiteCommand(
-               "SELECT * FROM PRODUCT;", connection);
+               "SELECT * FROM PRODUCT;",
+                connection);
+
             using (SQLiteDataReader read = command.ExecuteReader())
             {
                 while (read.Read())
@@ -96,7 +98,8 @@ namespace Digital_Shop_Software
             else if (qty.Text.Length > 0 && p_code.Text.Length == 0)
             {
                 qty.Clear();
-                MessageBox.Show("Please make sure that you've selected a product before introducing the quantity!");
+                MessageBox.Show(
+                    "Please make sure that you've selected a product before introducing the quantity!");
             }
             else if (string.IsNullOrEmpty(qty.Text))
             {

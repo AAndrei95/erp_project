@@ -27,8 +27,11 @@ namespace Digital_Shop_Software
             var sc_question = "";
             // Creating database command and executing it
             string db_get_username = "Select Username,SecurityQuestion from Users where Username = @username;";
+
             SQLiteCommand command = new SQLiteCommand(db_get_username, connection);
+
             command.Parameters.AddWithValue("@username", username);
+            
             using (SQLiteDataReader reader = command.ExecuteReader())
             {
                 //Retriving data from database

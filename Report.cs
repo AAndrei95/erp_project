@@ -11,16 +11,16 @@ namespace Digital_Shop_Software
 
             // Method that load the sales report into grid view
             SQLiteCommand command = new SQLiteCommand(
-                "Select *," +
-                "(Sum(Orders.\"Total Orders\") * Product.SupplierPrice) as \"Net Cost\", " +
-                "(Sum(Orders.\"Total Orders\") * Product.SalePrice) as Sale," +
-                "((Sum(Orders.\"Total Orders\") * Product.SalePrice) - (Sum(Orders.\"Total Orders\") * Product.SupplierPrice)) as Profit " +
-                "from Product Left Join " +
-                "(Select fk_ProductId, Sum(OrderQty) as \"Total Orders\"from \"Client Orders\" Group by fk_productid) " +
+                "SELECT *," +
+                "(SUM(Orders.\"Total Orders\") * Product.SupplierPrice) as \"Net Cost\", " +
+                "(SUM(Orders.\"Total Orders\") * Product.SalePrice) as Sale," +
+                "((SUM(Orders.\"Total Orders\") * Product.SalePrice) - (SUM(Orders.\"Total Orders\") * Product.SupplierPrice)) as Profit " +
+                "FROM Product LEFT JOIN " +
+                "(SELECT fk_ProductId, SUM(OrderQty) as \"Total Orders\"FROM \"Client Orders\" GROUP BY fk_productid) " +
                 "as Orders on Orders.fk_ProductId = Product.ProductId " +
-                "Where Orders.\"Total Orders\" > 0 Group by ProductId;"
-                , connection
-            );
+                "WHERE Orders.\"Total Orders\" > 0 GROUP BY ProductId;",
+                connection);
+
             using (SQLiteDataReader read = command.ExecuteReader())
             {
                 while (read.Read())
@@ -46,16 +46,16 @@ namespace Digital_Shop_Software
 
             // Method that loads top 10 products into grid view
             SQLiteCommand command = new SQLiteCommand(
-                "Select *," +
-                "(Sum(Orders.\"Total Orders\") * Product.SupplierPrice) as \"Net Cost\", " +
-                "(Sum(Orders.\"Total Orders\") * Product.SalePrice) as Sale," +
-                "((Sum(Orders.\"Total Orders\") * Product.SalePrice) - (Sum(Orders.\"Total Orders\") * Product.SupplierPrice)) as Profit " +
-                "from Product Left Join " +
-                "(Select fk_ProductId, Sum(OrderQty) as \"Total Orders\"from \"Client Orders\" Group by fk_productid) " +
+                "SELECT *," +
+                "(SUM(Orders.\"Total Orders\") * Product.SupplierPrice) as \"Net Cost\", " +
+                "(SUM(Orders.\"Total Orders\") * Product.SalePrice) as Sale," +
+                "((SUM(Orders.\"Total Orders\") * Product.SalePrice) - (SUM(Orders.\"Total Orders\") * Product.SupplierPrice)) as Profit " +
+                "FROM Product LEFT JOIN " +
+                "(SELECT fk_ProductId, SUM(OrderQty) as \"Total Orders\"FROM \"Client Orders\" GROUP BY fk_productid) " +
                 "as Orders on Orders.fk_ProductId = Product.ProductId " +
-                "Where Orders.\"Total Orders\" > 0 Group by ProductId Order by SalePrice DESC limit 10;"
-                , connection
-            );
+                "WHERE Orders.\"Total Orders\" > 0 GROUP BY ProductId ORDER BY SalePrice DESC LIMIT 10;",
+                connection);
+            
             using (SQLiteDataReader read = command.ExecuteReader())
             {
                 while (read.Read())
@@ -81,16 +81,16 @@ namespace Digital_Shop_Software
             connection.Open();
             
             SQLiteCommand command = new SQLiteCommand(
-                "Select *," +
-                "(Sum(Orders.\"Total Orders\") * Product.SupplierPrice) as \"Net Cost\", " +
-                "(Sum(Orders.\"Total Orders\") * Product.SalePrice) as Sale," +
-                "((Sum(Orders.\"Total Orders\") * Product.SalePrice) - (Sum(Orders.\"Total Orders\") * Product.SupplierPrice)) as Profit " +
-                "from Product Left Join " +
-                "(Select fk_ProductId, Sum(OrderQty) as \"Total Orders\"from \"Client Orders\" Group by fk_productid) " +
+                "SELECT *," +
+                "(SUM(Orders.\"Total Orders\") * Product.SupplierPrice) as \"Net Cost\", " +
+                "(SUM(Orders.\"Total Orders\") * Product.SalePrice) as Sale," +
+                "((SUM(Orders.\"Total Orders\") * Product.SalePrice) - (SUM(Orders.\"Total Orders\") * Product.SupplierPrice)) as Profit " +
+                "FROM Product LEFT JOIN " +
+                "(SELECT fk_ProductId, SUM(OrderQty) as \"Total Orders\"FROM \"Client Orders\" GROUP BY fk_productid) " +
                 "as Orders on Orders.fk_ProductId = Product.ProductId " +
-                "Where Orders.\"Total Orders\" > 0 Group by ProductId Order by SalePrice ASC limit 10;"
-                , connection
-            );
+                "WHERE Orders.\"Total Orders\" > 0 GROUP BY ProductId ORDER BY SalePrice ASC LIMIT 10;",
+                connection);
+
             using (SQLiteDataReader read = command.ExecuteReader())
             {
                 while (read.Read())

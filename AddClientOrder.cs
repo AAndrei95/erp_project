@@ -21,7 +21,9 @@ namespace Digital_Shop_Software
             connection.Open();
 
             SQLiteCommand command = new SQLiteCommand(
-               "SELECT * FROM PRODUCT;", connection);
+                "SELECT * FROM PRODUCT;",
+                connection);
+
             using (SQLiteDataReader read = command.ExecuteReader())
             {
                 while (read.Read())
@@ -35,6 +37,7 @@ namespace Digital_Shop_Software
             }
             SQLiteCommand cmd = new SQLiteCommand(
                "SELECT * FROM CLIENT;", connection);
+
             using (SQLiteDataReader read = cmd.ExecuteReader())
             {
                 while (read.Read())
@@ -104,7 +107,9 @@ namespace Digital_Shop_Software
             {
                 o_val.Text = sale_price.ToString();
             }
-            else if (qty.Text.Length > 0 && p_code.Text.Length > 0 && Convert.ToInt32(qty.Text) < Convert.ToInt32(s_qty.Text))
+            else if (qty.Text.Length > 0 &&
+                p_code.Text.Length > 0
+                && Convert.ToInt32(qty.Text) < Convert.ToInt32(s_qty.Text))
             {
                 try
                 {
@@ -120,7 +125,9 @@ namespace Digital_Shop_Software
                     MessageBox.Show("The quantity must be a number!");
                 }
             }
-            else if (qty.Text.Length > 0 && p_code.Text.Length > 0 && Convert.ToInt32(qty.Text) > Convert.ToInt32(s_qty.Text))
+            else if (qty.Text.Length > 0
+                && p_code.Text.Length > 0 &&
+                Convert.ToInt32(qty.Text) > Convert.ToInt32(s_qty.Text))
             {
                 try
                 {

@@ -129,25 +129,13 @@ namespace Digital_Shop_Software
                         "WHERE SupplierId = @supplierId;",
                         connection);
 
-                    command.Parameters.AddWithValue(
-                        "@supplierId",
-                        Suppliers.suppliers.SupplierDataGrid.Rows[item].Cells[0].Value);
-                    command.Parameters.AddWithValue(
-                        "@supplierName",
-                        Suppliers.suppliers.SupplierDataGrid.Rows[item].Cells[1].Value);
-                    command.Parameters.AddWithValue(
-                        "@description",
-                        Suppliers.suppliers.SupplierDataGrid.Rows[item].Cells[2].Value);
-                    command.Parameters.AddWithValue(
-                        "@email",
-                        Suppliers.suppliers.SupplierDataGrid.Rows[item].Cells[3].Value);
-                    command.Parameters.AddWithValue(
-                        "@phoneNumber",
-                        Suppliers.suppliers.SupplierDataGrid.Rows[item].Cells[4].Value);
-                    command.Parameters.AddWithValue(
-                        "@representative",
-                        Suppliers.suppliers.SupplierDataGrid.Rows[item].Cells[5].Value);
-                        
+                    command.Parameters.AddWithValue("@supplierId", Suppliers.suppliers.SupplierDataGrid.Rows[item].Cells[0].Value);
+                    command.Parameters.AddWithValue("@supplierName", Suppliers.suppliers.SupplierDataGrid.Rows[item].Cells[1].Value);  
+                    command.Parameters.AddWithValue("@description", Suppliers.suppliers.SupplierDataGrid.Rows[item].Cells[2].Value);   
+                    command.Parameters.AddWithValue("@email", Suppliers.suppliers.SupplierDataGrid.Rows[item].Cells[3].Value);    
+                    command.Parameters.AddWithValue("@phoneNumber", Suppliers.suppliers.SupplierDataGrid.Rows[item].Cells[4].Value);       
+                    command.Parameters.AddWithValue("@representative", Suppliers.suppliers.SupplierDataGrid.Rows[item].Cells[5].Value);
+  
                     command.ExecuteNonQuery();
                 }
                 Suppliers.suppliers.SupplierDataGrid.EndEdit();

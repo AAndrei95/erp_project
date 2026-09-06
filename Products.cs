@@ -20,8 +20,10 @@ namespace Digital_Shop_Software
 
             // Loading grid view with stock data
             SQLiteCommand command = new SQLiteCommand(
-                "Select * From Product Inner Join Users on Users.UserId = Product.fk_UserId Inner Join Supplier on Supplier.SupplierId = fk_supplierId;"
-                , connection);
+                "SELECT * FROM Product INNER JOIN Users ON Users.UserId = "+
+                "Product.fk_UserId INNER JOIN Supplier ON Supplier.SupplierId = fk_supplierId;",
+                connection);
+
             using (SQLiteDataReader read = command.ExecuteReader())
             {
                  while (read.Read())
@@ -271,6 +273,7 @@ namespace Digital_Shop_Software
                         "onOrderQty = @OnOrderQty, " +
                         "deliverydate = @deliverydate, " +
                         "fk_Userid = @fk_userid where productid = @productid;", connection);
+
                     command.Parameters.AddWithValue("@productid", Stock.stock.StockDataGrid.Rows[item].Cells[0].Value);
                     command.Parameters.AddWithValue("@name", Stock.stock.StockDataGrid.Rows[item].Cells[1].Value);
                     command.Parameters.AddWithValue("@category", Stock.stock.StockDataGrid.Rows[item].Cells[2].Value);
@@ -282,6 +285,7 @@ namespace Digital_Shop_Software
                     command.Parameters.AddWithValue("@OnOrderQty", Stock.stock.StockDataGrid.Rows[item].Cells[8].Value);
                     command.Parameters.AddWithValue("@deliverydate", Stock.stock.StockDataGrid.Rows[item].Cells[9].Value);
                     command.Parameters.AddWithValue("@fk_userid", user.GetUserId());
+                    
                     command.ExecuteNonQuery();
                 }
                 Stock.stock.StockDataGrid.EndEdit();
