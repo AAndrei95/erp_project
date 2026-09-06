@@ -1,4 +1,5 @@
 ﻿using System.Data.SQLite;
+using Digital_Shop_Software.Repositories;
 
 namespace Digital_Shop_Software
 {
@@ -36,6 +37,8 @@ namespace Digital_Shop_Software
         // Method that adds customers in the database and refreshes datagrid
         public void AddCustomers()
         {
+            UserRepository userRepository = new UserRepository();
+
             using SQLiteConnection connection = Database.CreateConnection();
             connection.Open();
 
@@ -54,7 +57,7 @@ namespace Digital_Shop_Software
                 command.Parameters.AddWithValue("@registered", Convert.ToInt32(AddCustomer.addCustomer.reg.Text));
                 command.Parameters.AddWithValue("@orderDate", ConvertToDate());
                 command.Parameters.AddWithValue("@lastOrder", order_date);
-                command.Parameters.AddWithValue("@userId", Convert.ToInt32(user.GetUserId()));
+                command.Parameters.AddWithValue("@userId", userRepository.GetUserId(Login.login.Username.Text));
 
                 command.ExecuteNonQuery();
 
@@ -77,7 +80,7 @@ namespace Digital_Shop_Software
                 command.Parameters.AddWithValue("@registered", Convert.ToInt32(AddCustomer.addCustomer.reg.Text));
                 command.Parameters.AddWithValue("@orderDate", order_date);
                 command.Parameters.AddWithValue("@lastOrder", order_date);
-                command.Parameters.AddWithValue("@userId", Convert.ToInt32(user.GetUserId()));
+                command.Parameters.AddWithValue("@userId", userRepository.GetUserId(Login.login.Username.Text));
 
                 command.ExecuteNonQuery();
                 MessageBox.Show("You've succesfully added a new customer into the customer list!");
@@ -173,6 +176,8 @@ namespace Digital_Shop_Software
         // Method that allows modifying the datagrid along with the database
         public void ModifyCustomer()
         {
+            UserRepository userRepository = new UserRepository();
+            
             using SQLiteConnection connection = Database.CreateConnection();
             connection.Open();
 
@@ -196,7 +201,7 @@ namespace Digital_Shop_Software
                     command.Parameters.AddWithValue("@registered", Customers.customers.CustomerDataGrid.Rows[item].Cells[3].Value);
                     command.Parameters.AddWithValue("@orderDate", Customers.customers.CustomerDataGrid.Rows[item].Cells[4].Value);
                     command.Parameters.AddWithValue("@lastOrder", Customers.customers.CustomerDataGrid.Rows[item].Cells[5].Value);
-                    command.Parameters.AddWithValue("@userid", user.GetUserId());
+                    command.Parameters.AddWithValue("@userid", userRepository.GetUserId(Login.login.Username.Text));
                     
                     command.ExecuteNonQuery();
                 }

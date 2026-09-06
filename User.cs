@@ -1,4 +1,5 @@
 ﻿using System.Data.SQLite;
+using Digital_Shop_Software.Repositories;
 
 namespace Digital_Shop_Software
 {
@@ -6,59 +7,40 @@ namespace Digital_Shop_Software
     {
         // Checking Credentials methods
         int dob;
-        public string userId;
         public string position;
         public void CheckCredentials(string username, string password)
         {
-            // Opening database connection
-            using SQLiteConnection connection = Database.CreateConnection();
-            connection.Open();
+            UserRepository userRepository = new UserRepository();
+            
+            var user = userRepository.GetUserByUsername(username);
 
-            var db_username = "";
-            var db_password = "";
-            // Setting the command
-            string db_user = "Select Username, Password from Users where Username =@username;";
-
-            SQLiteCommand command = new SQLiteCommand(db_user, connection);
-
-            command.Parameters.AddWithValue("@username", username);
-            // Executing the command
-            using (SQLiteDataReader reader = command.ExecuteReader())
+            // If the username does not exist show error message and delete user input
+            if (user == null || username == "")
             {
-                while (reader.Read())
+                MessageBox.Show("Invalid username!");
+                Login.login.Username.Clear();
+                Login.login.Password.Clear();
+                return;
+            }
+
+            // If the username exist check if the password is correct
+            if (PasswordHasher.VerifyPassword(password, user.Value.Password))
                 {
-                    // Grabbing from the database the username and password accordind to user input
-                    db_username = reader["Username"].ToString();
-                    db_password = reader["Password"].ToString();
+                    MainMenu menu = new MainMenu();
+                    menu.Show();
+
+                    MessageBox.Show("Login Succesful!\nWelcome " + Login.login.Username.Text);
+
+                    Login.login.Password.Clear();
+                    Login.login.Hide();
                 }
-                // If the username does not exist show message and delete user input
-                if (username != db_username || username == "")
+                else
                 {
-                    MessageBox.Show("Invalid username!");
-                    Login.login.Username.Clear();
+                    MessageBox.Show("Wrong password!");
                     Login.login.Password.Clear();
                 }
-                // If the username exist call method CheckPassword
-                else
-                if (PasswordHasher.VerifyPassword(password, db_password))
-                    {
-                        MainMenu menu = new MainMenu();
-                        menu.Show();
-
-                        MessageBox.Show(
-                            "Login Succesful!\nWelcome " + Login.login.Username.Text);
-
-                        Login.login.Password.Clear();
-                        Login.login.Hide();
-                    }
-                    else
-                    {
-                        MessageBox.Show("Wrong password!");
-                        Login.login.Password.Clear();
-                    }
-            }
         }
-
+        
         // Reset password methods
         public void Reset_Pass_Username(string username, string sq_answer, string new_pass, string new_pass_conf)
         {
@@ -244,26 +226,6 @@ namespace Digital_Shop_Software
                         });
                     }
                 }
-            }
-        }
-
-        public string GetUserId()
-        {
-            using SQLiteConnection connection = Database.CreateConnection();
-            connection.Open();
-
-            string get_positon = "Select * from Users where Username =@username;";
-            SQLiteCommand command = new SQLiteCommand(get_positon, connection);
-            command.Parameters.AddWithValue("@username", Login.login.Username.Text);
-            // Executing the command
-            using (SQLiteDataReader reader = command.ExecuteReader())
-            {
-                while (reader.Read())
-                {
-                    // Grabbing from the database the username and password accordind to user input
-                    userId = reader["UserId"].ToString();
-                }
-                return userId;
             }
         }
 

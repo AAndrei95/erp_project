@@ -1,4 +1,5 @@
 ﻿using System.Data.SQLite;
+using Digital_Shop_Software.Repositories;
 
 namespace Digital_Shop_Software
 {
@@ -71,6 +72,8 @@ namespace Digital_Shop_Software
         // Method that adds products into the database and refreshes grid view
         public void AddProducts()
         {
+            UserRepository userRepository = new UserRepository();
+
             using SQLiteConnection connection = Database.CreateConnection();
             connection.Open();
 
@@ -92,7 +95,7 @@ namespace Digital_Shop_Software
             command.Parameters.AddWithValue("@onOrderQty", onOrderOty);
             command.Parameters.AddWithValue("@deliveryDate", del_date);
             command.Parameters.AddWithValue("@supplierId", Convert.ToInt32(GetSupplier()));
-            command.Parameters.AddWithValue("@userId", Convert.ToInt32(user.GetUserId()));
+            command.Parameters.AddWithValue("@userId", userRepository.GetUserId(Login.login.Username.Text));
 
             command.ExecuteNonQuery();
 
@@ -254,6 +257,8 @@ namespace Digital_Shop_Software
         // Method that alows modifying the grid view cells along with database rows
         public void ModifyStock()
         {
+            UserRepository userRepository = new UserRepository();
+            
             using SQLiteConnection connection = Database.CreateConnection();
             connection.Open();
 
@@ -284,7 +289,7 @@ namespace Digital_Shop_Software
                     command.Parameters.AddWithValue("@onOrder", Stock.stock.StockDataGrid.Rows[item].Cells[7].Value);
                     command.Parameters.AddWithValue("@OnOrderQty", Stock.stock.StockDataGrid.Rows[item].Cells[8].Value);
                     command.Parameters.AddWithValue("@deliverydate", Stock.stock.StockDataGrid.Rows[item].Cells[9].Value);
-                    command.Parameters.AddWithValue("@fk_userid", user.GetUserId());
+                    command.Parameters.AddWithValue("@fk_userid", userRepository.GetUserId(Login.login.Username.Text));
                     
                     command.ExecuteNonQuery();
                 }
