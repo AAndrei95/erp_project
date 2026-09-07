@@ -1,6 +1,3 @@
-using System.Data.SQLite;
-using System.Security.Policy;
-
 namespace Digital_Shop_Software
 {
     internal static class Program

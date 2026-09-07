@@ -65,7 +65,7 @@ namespace Digital_Shop_Software
             string sq_answer = SQAnswer.Text;
             string new_pass = New_pass.Text;
             string new_pass_conf = New_pass_conf.Text;
-            user.Reset_Pass_Username(username, sq_answer, new_pass, new_pass_conf);
+            user.ResetPassUsername(username, sq_answer, new_pass, new_pass_conf);
         }
 
         // Closing form upon pressing Cancel button
