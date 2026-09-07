@@ -2,7 +2,7 @@ using System.Security.Cryptography;
 
 namespace Digital_Shop_Software
 {
-    internal static class PasswordHasher
+    public static class PasswordHasher
     {
         public static string HashPassword(string password)
         {

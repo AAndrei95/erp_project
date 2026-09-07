@@ -12,6 +12,11 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="src\**" />
+    <Compile Remove="tests\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Content Include="favicon.ico" />
   </ItemGroup>
 
@@ -32,6 +37,10 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="src\Digital Shop Software.Core\Digital Shop Software.Core.csproj" />
   </ItemGroup>
 
 </Project>
