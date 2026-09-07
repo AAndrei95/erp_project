@@ -1,5 +1,4 @@
-﻿using System.Data.SQLite;
-using Digital_Shop_Software.Repositories;
+﻿using Digital_Shop_Software.Repositories;
 
 namespace Digital_Shop_Software
 {
@@ -9,109 +8,72 @@ namespace Digital_Shop_Software
         // Method that loads datagrid
         public void LoadCustomers()
         {
-            using SQLiteConnection connection = Database.CreateConnection();
-            connection.Open();
+            CustomerRepository customerRepository = new CustomerRepository();
 
-            SQLiteCommand command = new SQLiteCommand(
-                "SELECT * FROM CLIENT INNER JOIN USERS ON USERS.USERID = CLIENT.USERID;",
-                connection);
+            List<Dictionary<string, object>> customers = customerRepository.GetCustomers();
 
-            using (SQLiteDataReader read = command.ExecuteReader())
-            {
-                while (read.Read())
+                foreach (Dictionary<string, object> customer in customers)
                 {
                     Customers.customers.CustomerDataGrid.Rows.Add(new object[]
-                        {
-                            read.GetValue(0),
-                            read.GetValue(read.GetOrdinal("Email")),
-                            read.GetValue(read.GetOrdinal("PhoneNumber")),
-                            read.GetValue(read.GetOrdinal("Registered")),
-                            read.GetValue(read.GetOrdinal("OrderDate")),
-                            read.GetValue(read.GetOrdinal("LastOrder")),
-                            read.GetValue(read.GetOrdinal("Username"))
-                        });
+                    {
+                        customer["ClientId"],
+                        customer["Email"],
+                        customer["PhoneNumber"],
+                        customer["Registered"],
+                        customer["OrderDate"],
+                        customer["LastOrder"],
+                        customer["Username"]
+                    });
                 }
-            }
         }
 
         // Method that adds customers in the database and refreshes datagrid
         public void AddCustomers()
         {
             UserRepository userRepository = new UserRepository();
+            CustomerRepository customerRepository = new CustomerRepository();
 
-            using SQLiteConnection connection = Database.CreateConnection();
-            connection.Open();
+            int userId = userRepository.GetUserId(Login.login.Username.Text);
+            int registered = Convert.ToInt32(AddCustomer.addCustomer.reg.Text);
+            int orderDate = order_date;
+            int lastOrder = order_date;
 
-            User user = new User();
-            // If the user has an order
             if (AddCustomer.addCustomer.checkBox1.Checked)
             {
-                SQLiteCommand command = new SQLiteCommand(
-                    "INSERT INTO Client " +
-                    "(Email, PhoneNumber, Registered, OrderDate, LastOrder, UserId) " +
-                    "VALUES (@email, @phoneNumber, @registered, @orderDate, @lastOrder, @userId);",
-                    connection);
-
-                command.Parameters.AddWithValue("@email", AddCustomer.addCustomer.email.Text);
-                command.Parameters.AddWithValue("@phoneNumber", AddCustomer.addCustomer.ph_num.Text);
-                command.Parameters.AddWithValue("@registered", Convert.ToInt32(AddCustomer.addCustomer.reg.Text));
-                command.Parameters.AddWithValue("@orderDate", ConvertToDate());
-                command.Parameters.AddWithValue("@lastOrder", order_date);
-                command.Parameters.AddWithValue("@userId", userRepository.GetUserId(Login.login.Username.Text));
-
-                command.ExecuteNonQuery();
-
-                MessageBox.Show("You've succesfully added a new customer into the customer list!");
-                Customers.customers.CustomerDataGrid.Rows.Clear();
-                LoadCustomers();
-                AddCustomer.addCustomer.Close();
+                orderDate = ConvertToDate();
+                lastOrder = order_date;
             }
-            // No order
-            else
+                
+            customerRepository.AddCustomer(
+                AddCustomer.addCustomer.email.Text,
+                AddCustomer.addCustomer.ph_num.Text,
+                registered,
+                orderDate,
+                lastOrder,
+                userId);
+
+            MessageBox.Show("You've succesfully added a new customer into the customer list!");
+
+            Customers.customers.CustomerDataGrid.Rows.Clear();
+            LoadCustomers();
+
+            AddCustomer.addCustomer.Close();
+
+             if (AddClientOrder.addClientOrder != null &&
+                AddClientOrder.addClientOrder.new_client == true)
             {
-                SQLiteCommand command = new SQLiteCommand(
-                    "INSERT INTO Client " +
-                    "(Email, PhoneNumber, Registered, OrderDate, LastOrder, UserId) " +
-                    "VALUES (@email, @phoneNumber, @registered, @orderDate, @lastOrder, @userId);",
-                    connection);
+                AddClientOrder.addClientOrder.new_client = false;
+                AddClientOrder.addClientOrder.clientid.Items.Clear();
 
-                command.Parameters.AddWithValue("@email", AddCustomer.addCustomer.email.Text);
-                command.Parameters.AddWithValue("@phoneNumber", AddCustomer.addCustomer.ph_num.Text);
-                command.Parameters.AddWithValue("@registered", Convert.ToInt32(AddCustomer.addCustomer.reg.Text));
-                command.Parameters.AddWithValue("@orderDate", order_date);
-                command.Parameters.AddWithValue("@lastOrder", order_date);
-                command.Parameters.AddWithValue("@userId", userRepository.GetUserId(Login.login.Username.Text));
+                List<int> clientIds = customerRepository.GetClientIds();
 
-                command.ExecuteNonQuery();
-                MessageBox.Show("You've succesfully added a new customer into the customer list!");
-                try
+                foreach (int clientId in clientIds)
                 {
-                    Customers.customers.CustomerDataGrid.Rows.Clear();
-                    LoadCustomers();
+                    AddClientOrder.addClientOrder.clientid.Items.Add(clientId);
                 }
-                catch (Exception ex) { }
-                AddCustomer.addCustomer.Close();
-                if (AddClientOrder.addClientOrder.new_client == true)
+
+                if (AddClientOrder.addClientOrder.clientid.Items.Count > 0)
                 {
-                    AddClientOrder.addClientOrder.new_client = false;
-                    AddClientOrder.addClientOrder.clientid.Items.Clear();
-
-                    SQLiteCommand cmd = new SQLiteCommand(
-                        "SELECT * FROM CLIENT;",
-                        connection);
-
-                    using (SQLiteDataReader read = cmd.ExecuteReader())
-                    {
-                        while (read.Read())
-                        {
-                            // Adding client codes in combobox
-                            AddClientOrder.addClientOrder.clientid.Items.AddRange(new object[]
-                            {
-                        read.GetValue(read.GetOrdinal("clientId"))
-                            });
-                        }
-                    }
-                    // Setting a default value for combobox
                     AddClientOrder.addClientOrder.clientid.Text = AddClientOrder.addClientOrder.clientid.Items[0].ToString();
                 }
             }
@@ -139,16 +101,19 @@ namespace Digital_Shop_Software
             }
             else { AddCustomers(); }
         }
+
         // Methods that removes rows from the datagrid along with rows from the database
         public void RemoveCustomer()
         {
-            using SQLiteConnection connection = Database.CreateConnection();
-            connection.Open();
+            CustomerRepository customerRepository = new CustomerRepository();
 
             // If minimum a row is selected
             if (Customers.customers.CustomerDataGrid.SelectedRows.Count > 0)
             {
-                DialogResult dg_res = MessageBox.Show("Are you sure you want to remove this row?", "Delete Row", MessageBoxButtons.YesNo);
+                DialogResult dg_res = MessageBox.Show(
+                    "Are you sure you want to remove this row?",
+                    "Delete Row", MessageBoxButtons.YesNo);
+
                 if (dg_res == DialogResult.Yes)
                 {
                     // For each row selected in the datagrid delete the matching row in the database
@@ -156,54 +121,44 @@ namespace Digital_Shop_Software
                     {
                         int id = Convert.ToInt32(Customers.customers.CustomerDataGrid.SelectedRows[0].Cells[0].Value);
 
-                        SQLiteCommand command = new SQLiteCommand(
-                            "DELETE FROM Client WHERE ClientId = @clientId;",
-                            connection);
-
-                        command.Parameters.AddWithValue("@clientId", id);
-
+                        customerRepository.RemoveCustomer(id);
                         Customers.customers.CustomerDataGrid.Rows.RemoveAt(Customers.customers.CustomerDataGrid.SelectedRows[0].Index);
-                        
-                        command.ExecuteNonQuery();
                     }
                 }
             }
             // If no row is selected
             else
-            { MessageBox.Show("Please select a row in order to delete it!"); }
+            { 
+                MessageBox.Show("Please select a row in order to delete it!");
+            }
         }
 
         // Method that allows modifying the datagrid along with the database
         public void ModifyCustomer()
         {
             UserRepository userRepository = new UserRepository();
-            
-            using SQLiteConnection connection = Database.CreateConnection();
-            connection.Open();
+            CustomerRepository customerRepository = new CustomerRepository();
 
-            User user = new User();
             if (Customers.customers.CustomerDataGrid.EditMode == DataGridViewEditMode.EditProgrammatically)
             {
                 for (int item = 0; item <= Customers.customers.CustomerDataGrid.Rows.Count - 1; item++)
                 {
-                    SQLiteCommand command = new SQLiteCommand("UPDATE CLIENT SET " +
-                        "email = @email, " +
-                        "phonenumber = @phonenumber, " +
-                        "registered = @registered, " +
-                        "OrderDate = @orderDate, " +
-                        "lastorder = @lastOrder, " +
-                        "userid = @userid " +
-                        "where clientid = @clientid;", connection);
+                    int clientId = Convert.ToInt32(Customers.customers.CustomerDataGrid.Rows[item].Cells[0].Value);
+                    string email = Customers.customers.CustomerDataGrid.Rows[item].Cells[1].Value?.ToString() ?? "";
+                    string phoneNumber = Customers.customers.CustomerDataGrid.Rows[item].Cells[2].Value?.ToString() ?? "";
+                    object registered = Customers.customers.CustomerDataGrid.Rows[item].Cells[3].Value ?? "";
+                    object orderDate = Customers.customers.CustomerDataGrid.Rows[item].Cells[4].Value ?? "";
+                    object lastOrder = Customers.customers.CustomerDataGrid.Rows[item].Cells[5].Value ?? "";
+                    int userId = userRepository.GetUserId(Login.login.Username.Text);
 
-                    command.Parameters.AddWithValue("@clientid", Customers.customers.CustomerDataGrid.Rows[item].Cells[0].Value);
-                    command.Parameters.AddWithValue("@email", Customers.customers.CustomerDataGrid.Rows[item].Cells[1].Value);
-                    command.Parameters.AddWithValue("@phonenumber", Customers.customers.CustomerDataGrid.Rows[item].Cells[2].Value);
-                    command.Parameters.AddWithValue("@registered", Customers.customers.CustomerDataGrid.Rows[item].Cells[3].Value);
-                    command.Parameters.AddWithValue("@orderDate", Customers.customers.CustomerDataGrid.Rows[item].Cells[4].Value);
-                    command.Parameters.AddWithValue("@lastOrder", Customers.customers.CustomerDataGrid.Rows[item].Cells[5].Value);
-                    command.Parameters.AddWithValue("@userid", userRepository.GetUserId(Login.login.Username.Text));
-                    
-                    command.ExecuteNonQuery();
+                    customerRepository.ModifyCustomer(
+                        clientId,
+                        email,
+                        phoneNumber,
+                        registered,
+                        orderDate,
+                        lastOrder,
+                        userId);
                 }
                 Customers.customers.CustomerDataGrid.EndEdit();
                 Customers.customers.CustomerDataGrid.EditMode = DataGridViewEditMode.EditOnF2;
