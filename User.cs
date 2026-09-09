@@ -280,34 +280,28 @@ namespace Digital_Shop_Software
         {
             UserRepository userRepository = new UserRepository();
 
-            if (Users.users.UsersDataGrid.EditMode == DataGridViewEditMode.EditProgrammatically)
+            Users.users.UsersDataGrid.EndEdit();
+            
+            for (int item = 0; item <= Users.users.UsersDataGrid.Rows.Count - 1; item++)
             {
-                for (int item = 0; item <= Users.users.UsersDataGrid.Rows.Count - 1; item++)
-                {
-                   int userId = Convert.ToInt32(Users.users.UsersDataGrid.Rows[item].Cells[0].Value);
-                   string passwordHash = Users.users.UsersDataGrid.Rows[item].Cells[3].Value?.ToString() ?? "";
+                int userId = Convert.ToInt32(Users.users.UsersDataGrid.Rows[item].Cells[0].Value);
+                string passwordHash = Users.users.UsersDataGrid.Rows[item].Cells[3].Value?.ToString() ?? "";
 
-                   userRepository.ModifyUser(
-                        userId,
-                        Users.users.UsersDataGrid.Rows[item].Cells[1].Value?.ToString() ?? "",
-                        Users.users.UsersDataGrid.Rows[item].Cells[2].Value?.ToString() ?? "",
-                        passwordHash,
-                        Users.users.UsersDataGrid.Rows[item].Cells[4].Value?.ToString() ?? "",
-                        Users.users.UsersDataGrid.Rows[item].Cells[5].Value?.ToString() ?? "",
-                        Users.users.UsersDataGrid.Rows[item].Cells[6].Value?.ToString() ?? "",
-                        Users.users.UsersDataGrid.Rows[item].Cells[7].Value?.ToString() ?? "",
-                        Users.users.UsersDataGrid.Rows[item].Cells[8].Value?.ToString() ?? "",
-                        Users.users.UsersDataGrid.Rows[item].Cells[9].Value?.ToString() ?? "");
-                }
-                Users.users.UsersDataGrid.EndEdit();
-                Users.users.UsersDataGrid.EditMode = DataGridViewEditMode.EditOnF2;
+                userRepository.ModifyUser(
+                    userId,
+                    Users.users.UsersDataGrid.Rows[item].Cells[1].Value?.ToString() ?? "",
+                    Users.users.UsersDataGrid.Rows[item].Cells[2].Value?.ToString() ?? "",
+                    passwordHash,
+                    Users.users.UsersDataGrid.Rows[item].Cells[4].Value?.ToString() ?? "",
+                    Users.users.UsersDataGrid.Rows[item].Cells[5].Value?.ToString() ?? "",
+                    Users.users.UsersDataGrid.Rows[item].Cells[6].Value?.ToString() ?? "",
+                    Users.users.UsersDataGrid.Rows[item].Cells[7].Value?.ToString() ?? "",
+                    Users.users.UsersDataGrid.Rows[item].Cells[8].Value?.ToString() ?? "",
+                    Users.users.UsersDataGrid.Rows[item].Cells[9].Value?.ToString() ?? "");
+                }   
+            Users.users.UsersDataGrid.EditMode = DataGridViewEditMode.EditOnF2;
                 
-                MessageBox.Show("You've succesfully edited the cell!");
-            } 
-            else 
-            { 
-                MessageBox.Show("Please double click on a cell in order to edit it!"); 
-            }
+            MessageBox.Show("You've succesfully edited the cell!");
         }
     }
 }

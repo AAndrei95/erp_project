@@ -124,7 +124,7 @@ namespace Digital_Shop_Software.Repositories
             using SQLiteCommand command = new SQLiteCommand(
                 "UPDATE CLIENT SET " +
                 "email = @email, " +
-                "phonenumber = @phonenumber, " +
+                "phonenumber = @phoneNumber, " +
                 "registered = @registered, " +
                 "OrderDate = @orderDate, " +
                 "lastorder = @lastOrder, " +

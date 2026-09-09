@@ -139,32 +139,30 @@ namespace Digital_Shop_Software
             UserRepository userRepository = new UserRepository();
             CustomerRepository customerRepository = new CustomerRepository();
 
-            if (Customers.customers.CustomerDataGrid.EditMode == DataGridViewEditMode.EditProgrammatically)
-            {
-                for (int item = 0; item <= Customers.customers.CustomerDataGrid.Rows.Count - 1; item++)
-                {
-                    int clientId = Convert.ToInt32(Customers.customers.CustomerDataGrid.Rows[item].Cells[0].Value);
-                    string email = Customers.customers.CustomerDataGrid.Rows[item].Cells[1].Value?.ToString() ?? "";
-                    string phoneNumber = Customers.customers.CustomerDataGrid.Rows[item].Cells[2].Value?.ToString() ?? "";
-                    object registered = Customers.customers.CustomerDataGrid.Rows[item].Cells[3].Value ?? "";
-                    object orderDate = Customers.customers.CustomerDataGrid.Rows[item].Cells[4].Value ?? "";
-                    object lastOrder = Customers.customers.CustomerDataGrid.Rows[item].Cells[5].Value ?? "";
-                    int userId = userRepository.GetUserId(Login.login.Username.Text);
+            Customers.customers.CustomerDataGrid.EndEdit();
 
-                    customerRepository.ModifyCustomer(
-                        clientId,
-                        email,
-                        phoneNumber,
-                        registered,
-                        orderDate,
-                        lastOrder,
-                        userId);
-                }
-                Customers.customers.CustomerDataGrid.EndEdit();
-                Customers.customers.CustomerDataGrid.EditMode = DataGridViewEditMode.EditOnF2;
-                MessageBox.Show("You've succesfully edited the cell!");
-            }
-            else { MessageBox.Show("Please double click on a cell in order to edit it!"); }
+            for (int item = 0; item <= Customers.customers.CustomerDataGrid.Rows.Count - 1; item++)
+            {
+                int clientId = Convert.ToInt32(Customers.customers.CustomerDataGrid.Rows[item].Cells[0].Value);
+                string email = Customers.customers.CustomerDataGrid.Rows[item].Cells[1].Value?.ToString() ?? "";
+                string phoneNumber = Customers.customers.CustomerDataGrid.Rows[item].Cells[2].Value?.ToString() ?? "";
+                object registered = Customers.customers.CustomerDataGrid.Rows[item].Cells[3].Value ?? "";
+                object orderDate = Customers.customers.CustomerDataGrid.Rows[item].Cells[4].Value ?? "";
+                object lastOrder = Customers.customers.CustomerDataGrid.Rows[item].Cells[5].Value ?? "";
+                int userId = userRepository.GetUserId(Login.login.Username.Text);
+
+                customerRepository.ModifyCustomer(
+                    clientId,
+                    email,
+                    phoneNumber,
+                    registered,
+                    orderDate,
+                    lastOrder,
+                    userId);
+            }   
+            Customers.customers.CustomerDataGrid.EditMode = DataGridViewEditMode.EditOnF2;
+            
+            MessageBox.Show("You've succesfully edited the cell!");
         }
-    }
+    }      
 }
