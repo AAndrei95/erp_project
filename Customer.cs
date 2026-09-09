@@ -141,7 +141,7 @@ namespace Digital_Shop_Software
 
             Customers.customers.CustomerDataGrid.EndEdit();
 
-            for (int item = 0; item <= Customers.customers.CustomerDataGrid.Rows.Count - 1; item++)
+            for (int item = 0; item < Customers.customers.CustomerDataGrid.Rows.Count; item++)
             {
                 int clientId = Convert.ToInt32(Customers.customers.CustomerDataGrid.Rows[item].Cells[0].Value);
                 string email = Customers.customers.CustomerDataGrid.Rows[item].Cells[1].Value?.ToString() ?? "";

@@ -282,7 +282,7 @@ namespace Digital_Shop_Software
 
             Users.users.UsersDataGrid.EndEdit();
             
-            for (int item = 0; item <= Users.users.UsersDataGrid.Rows.Count - 1; item++)
+            for (int item = 0; item < Users.users.UsersDataGrid.Rows.Count; item++)
             {
                 int userId = Convert.ToInt32(Users.users.UsersDataGrid.Rows[item].Cells[0].Value);
                 string passwordHash = Users.users.UsersDataGrid.Rows[item].Cells[3].Value?.ToString() ?? "";

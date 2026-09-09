@@ -1,5 +1,4 @@
-﻿using System.Data.SQLite;
-using Digital_Shop_Software.Repositories;
+﻿using Digital_Shop_Software.Repositories;
 
 namespace Digital_Shop_Software
 {
@@ -16,88 +15,62 @@ namespace Digital_Shop_Software
         string supplier_id = "";
         public void LoadStock()
         {
-            using SQLiteConnection connection = Database.CreateConnection();
-            connection.Open();
+            ProductRepository productRepository = new ProductRepository();
+
+            List<Dictionary<string, object>> products = productRepository.GetProducts();
 
             // Loading grid view with stock data
-            SQLiteCommand command = new SQLiteCommand(
-                "SELECT * FROM Product INNER JOIN Users ON Users.UserId = "+
-                "Product.fk_UserId INNER JOIN Supplier ON Supplier.SupplierId = fk_supplierId;",
-                connection);
-
-            using (SQLiteDataReader read = command.ExecuteReader())
+            foreach (Dictionary<string, object> product in products)
             {
-                 while (read.Read())
+                Stock.stock.StockDataGrid.Rows.Add(new object[]
                 {
-                    Stock.stock.StockDataGrid.Rows.Add(new object[]
-                       {
-                            read.GetValue(0),
-                            read.GetValue(read.GetOrdinal("Name")),
-                            read.GetValue(read.GetOrdinal("Category")),
-                            read.GetValue(read.GetOrdinal("Description")),
-                            read.GetValue(read.GetOrdinal("SupplierPrice")),
-                            read.GetValue(read.GetOrdinal("SalePrice")),
-                            read.GetValue(read.GetOrdinal("Qty")),
-                            read.GetValue(read.GetOrdinal("OnOrder")),
-                            read.GetValue(read.GetOrdinal("OnOrderQty")),
-                            read.GetValue(read.GetOrdinal("DeliveryDate")),
-                            read.GetValue(read.GetOrdinal("SupplierName")),
-                            read.GetValue(read.GetOrdinal("Username"))
-                       });
-                }
+                    product["ProductId"],
+                    product["Name"],
+                    product["Category"],
+                    product["Description"],
+                    product["SupplierPrice"],
+                    product["SalePrice"],
+                    product["Qty"],
+                    product["OnOrder"],
+                    product["OnOrderQty"],
+                    product["DeliveryDate"],
+                    product["SupplierName"],
+                    product["Username"]
+                });
             }
         }
 
         // Method that gets supplier id from database
         public string GetSupplier()
         {
-            using SQLiteConnection connection = Database.CreateConnection();
-            connection.Open();
+            ProductRepository productRepository = new ProductRepository();
 
-            SQLiteCommand find_Supplier = new SQLiteCommand(
-                "SELECT SupplierId FROM Supplier WHERE SupplierName = @supplierName;",
-                connection);
+            int supplierId = productRepository.GetSupplierId(AddStock.addStock.sup_name.Text);
 
-            find_Supplier.Parameters.AddWithValue("@supplierName", AddStock.addStock.sup_name.Text);
-
-            using (SQLiteDataReader read = find_Supplier.ExecuteReader())
-            {
-                while (read.Read())
-                {
-                    supplier_id = read["SupplierId"].ToString();
-                }
-                return supplier_id;
-            }
+            return supplier_id.ToString();
         }
+
         // Method that adds products into the database and refreshes grid view
         public void AddProducts()
         {
             UserRepository userRepository = new UserRepository();
+            ProductRepository productRepository = new ProductRepository();
 
-            using SQLiteConnection connection = Database.CreateConnection();
-            connection.Open();
+            int supplierId = productRepository.GetSupplierId(AddStock.addStock.sup_name.Text);
+            int userId = userRepository.GetUserId(Login.login.Username.Text);
 
-            User user = new User();
-
-            SQLiteCommand command = new SQLiteCommand(
-                "INSERT INTO Product " +
-                "(Name, Category, Description, SupplierPrice, SalePrice, Qty, OnOrder, OnOrderQty, DeliveryDate, fk_SupplierId, fk_UserId) " +
-                "VALUES (@name, @category, @supplierPrice, @salePrice, @qty, @onOrder, @onOrderQty, @deliveryDate, @supplierId, @userId);",
-                connection);
-
-            command.Parameters.AddWithValue("@name", AddStock.addStock.p_name.Text);
-            command.Parameters.AddWithValue("@category", AddStock.addStock.category.Text);
-            command.Parameters.AddWithValue("@description", AddStock.addStock.description.Text);
-            command.Parameters.AddWithValue("@supplierPrice", sp_price);
-            command.Parameters.AddWithValue("@salePrice", s_price);
-            command.Parameters.AddWithValue("@qty", qty);
-            command.Parameters.AddWithValue("@onOrder", onOrder);
-            command.Parameters.AddWithValue("@onOrderQty", onOrderOty);
-            command.Parameters.AddWithValue("@deliveryDate", del_date);
-            command.Parameters.AddWithValue("@supplierId", Convert.ToInt32(GetSupplier()));
-            command.Parameters.AddWithValue("@userId", userRepository.GetUserId(Login.login.Username.Text));
-
-            command.ExecuteNonQuery();
+            productRepository.AddProduct(
+                AddStock.addStock.p_name.Text,
+                AddStock.addStock.category.Text,
+                AddStock.addStock.description.Text,
+                sp_price,
+                s_price,
+                qty,
+                onOrder,
+                onOrderOty,
+                del_date,
+                supplierId,
+                userId);
 
             Stock.stock.StockDataGrid.Rows.Clear();
             LoadStock();
@@ -151,7 +124,7 @@ namespace Digital_Shop_Software
                 MessageBox.Show("Please fill in all the fields marked with *");
                 error = 1;
             }
-            else 
+            else
             {
                 ConvertValues();
             }
@@ -226,78 +199,70 @@ namespace Digital_Shop_Software
         // Method that removes products from the griview and database
         public void RemoveProduct()
         {
-            using SQLiteConnection connection = Database.CreateConnection();
-            connection.Open();
+            ProductRepository productRepository = new ProductRepository();
 
             if (Stock.stock.StockDataGrid.SelectedRows.Count > 0)
             {
-                DialogResult dg_res = MessageBox.Show("Are you sure you want to remove this row?", "Delete Row", MessageBoxButtons.YesNo);
+                DialogResult dg_res = MessageBox.Show(
+                    "Are you sure you want to remove this row?", "Delete Row", MessageBoxButtons.YesNo);
+
                 if (dg_res == DialogResult.Yes)
                 {
                     foreach (DataGridViewRow item in Stock.stock.StockDataGrid.SelectedRows)
                     {
-                        int id = Convert.ToInt32(Stock.stock.StockDataGrid.SelectedRows[0].Cells[0].Value);
-                        
-                        SQLiteCommand command = new SQLiteCommand(
-                            "DELETE FROM Product WHERE ProductId = @productId;",
-                            connection);
+                        int productId = Convert.ToInt32(item.Cells[0].Value);
 
-                        command.Parameters.AddWithValue("@productId", id);
+                        productRepository.RemoveProduct(productId);
 
-                        Stock.stock.StockDataGrid.Rows.RemoveAt(Stock.stock.StockDataGrid.SelectedRows[0].Index);
-
-                        command.ExecuteNonQuery();
+                        Stock.stock.StockDataGrid.Rows.Remove(item);
                     }
                 }
             }
             else
-            { MessageBox.Show("Please select a row in order to delete it!"); }
+            {
+                MessageBox.Show("Please select a row in order to delete it!");
+            }
         }
 
         // Method that alows modifying the grid view cells along with database rows
         public void ModifyStock()
         {
             UserRepository userRepository = new UserRepository();
-            
-            using SQLiteConnection connection = Database.CreateConnection();
-            connection.Open();
+            ProductRepository productRepository = new ProductRepository();
 
-            User user = new User();
-            if (Stock.stock.StockDataGrid.EditMode == DataGridViewEditMode.EditProgrammatically)
+            Stock.stock.StockDataGrid.EndEdit();
+
+            int userId = userRepository.GetUserId( Login.login.Username.Text);
+
+            for (int item = 0; item < Stock.stock.StockDataGrid.Rows.Count; item++)
             {
-                for (int item = 0; item <= Stock.stock.StockDataGrid.Rows.Count - 1; item++)
-                {
-                    SQLiteCommand command = new SQLiteCommand("Update product set " +
-                        "Name = @name, " +
-                        "category = @category, " +
-                        "description = @description, " +
-                        "supplierprice = @supplierprice, " +
-                        "saleprice = @saleprice, " +
-                        "qty = @qty, " +
-                        "onOrder = @onOrder, " +
-                        "onOrderQty = @OnOrderQty, " +
-                        "deliverydate = @deliverydate, " +
-                        "fk_Userid = @fk_userid where productid = @productid;", connection);
+                int productId = Convert.ToInt32(Stock.stock.StockDataGrid.Rows[item].Cells[0].Value);
+                string name = Stock.stock.StockDataGrid.Rows[item].Cells[1].Value?.ToString() ?? "";
+                string category = Stock.stock.StockDataGrid.Rows[item].Cells[2].Value?.ToString() ?? "";
+                string description = Stock.stock.StockDataGrid.Rows[item].Cells[3].Value?.ToString() ?? "";
+                decimal supplierPrice = Convert.ToDecimal(Stock.stock.StockDataGrid.Rows[item].Cells[4].Value);
+                decimal salePrice = Convert.ToDecimal(Stock.stock.StockDataGrid.Rows[item].Cells[5].Value);
+                int qty = Convert.ToInt32(Stock.stock.StockDataGrid.Rows[item].Cells[6].Value);
+                int onOrder = Convert.ToInt32(Stock.stock.StockDataGrid.Rows[item].Cells[7].Value);
+                int onOrderQty = Convert.ToInt32(Stock.stock.StockDataGrid.Rows[item].Cells[8].Value);
+                int deliveryDate = Convert.ToInt32(Stock.stock.StockDataGrid.Rows[item].Cells[9].Value);
 
-                    command.Parameters.AddWithValue("@productid", Stock.stock.StockDataGrid.Rows[item].Cells[0].Value);
-                    command.Parameters.AddWithValue("@name", Stock.stock.StockDataGrid.Rows[item].Cells[1].Value);
-                    command.Parameters.AddWithValue("@category", Stock.stock.StockDataGrid.Rows[item].Cells[2].Value);
-                    command.Parameters.AddWithValue("@description", Stock.stock.StockDataGrid.Rows[item].Cells[3].Value);
-                    command.Parameters.AddWithValue("@supplierprice", Stock.stock.StockDataGrid.Rows[item].Cells[4].Value);
-                    command.Parameters.AddWithValue("@saleprice", Stock.stock.StockDataGrid.Rows[item].Cells[5].Value);
-                    command.Parameters.AddWithValue("@qty", Stock.stock.StockDataGrid.Rows[item].Cells[6].Value);
-                    command.Parameters.AddWithValue("@onOrder", Stock.stock.StockDataGrid.Rows[item].Cells[7].Value);
-                    command.Parameters.AddWithValue("@OnOrderQty", Stock.stock.StockDataGrid.Rows[item].Cells[8].Value);
-                    command.Parameters.AddWithValue("@deliverydate", Stock.stock.StockDataGrid.Rows[item].Cells[9].Value);
-                    command.Parameters.AddWithValue("@fk_userid", userRepository.GetUserId(Login.login.Username.Text));
-                    
-                    command.ExecuteNonQuery();
-                }
-                Stock.stock.StockDataGrid.EndEdit();
-                Stock.stock.StockDataGrid.EditMode = DataGridViewEditMode.EditOnF2;
-                MessageBox.Show("You've succesfully edited the cell!");
+                productRepository.ModifyProduct(
+                    productId,
+                    name,
+                    category,
+                    description,
+                    supplierPrice,
+                    salePrice,
+                    qty,
+                    onOrder,
+                    onOrderQty,
+                    deliveryDate,
+                    userId);
             }
-            else { MessageBox.Show("Please double click on a cell in order to edit it!"); }
+            Stock.stock.StockDataGrid.EditMode = DataGridViewEditMode.EditOnF2;
+
+            MessageBox.Show("You've succesfully edited the cell!");
         }
     }
 }
