@@ -1,5 +1,4 @@
-﻿using System.Data.SQLite;
-using Digital_Shop_Software.Repositories;
+﻿using Digital_Shop_Software.Repositories;
 
 namespace Digital_Shop_Software
 {
