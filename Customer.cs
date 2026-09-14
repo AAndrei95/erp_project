@@ -1,4 +1,5 @@
 ﻿using Digital_Shop_Software.Repositories;
+using Digital_Shop_Software.Services;
 
 namespace Digital_Shop_Software
 {
@@ -30,10 +31,8 @@ namespace Digital_Shop_Software
         // Method that adds customers in the database and refreshes datagrid
         public void AddCustomers()
         {
-            UserRepository userRepository = new UserRepository();
-            CustomerRepository customerRepository = new CustomerRepository();
+            CustomerService customerService = new CustomerService();
 
-            int userId = userRepository.GetUserId(Login.login.Username.Text);
             int registered = Convert.ToInt32(AddCustomer.addCustomer.reg.Text);
             int orderDate = order_date;
             int lastOrder = order_date;
@@ -44,13 +43,13 @@ namespace Digital_Shop_Software
                 lastOrder = order_date;
             }
                 
-            customerRepository.AddCustomer(
+            customerService.AddCustomer(
                 AddCustomer.addCustomer.email.Text,
                 AddCustomer.addCustomer.ph_num.Text,
                 registered,
                 orderDate,
                 lastOrder,
-                userId);
+                Login.login.Username.Text);
 
             MessageBox.Show("You've succesfully added a new customer into the customer list!");
 
@@ -62,13 +61,13 @@ namespace Digital_Shop_Software
 
             AddCustomer.addCustomer.Close();
 
-             if (AddClientOrder.addClientOrder != null &&
+            if (AddClientOrder.addClientOrder != null &&
                 AddClientOrder.addClientOrder.new_client == true)
             {
                 AddClientOrder.addClientOrder.new_client = false;
                 AddClientOrder.addClientOrder.clientid.Items.Clear();
 
-                List<int> clientIds = customerRepository.GetClientIds();
+                List<int> clientIds = customerService.GetClientIds();
 
                 foreach (int clientId in clientIds)
                 {
