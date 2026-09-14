@@ -176,7 +176,7 @@ namespace Digital_Shop_Software.Repositories
             string query =
                 "UPDATE \"Client Orders\" SET " +
                 "OrderQty = @orderQty, " +
-                "ClientId = @clientId, " +
+                "fk_ClientId = @clientId, " +
                 "Value = @value " +
                 "WHERE Id = @id;";
 

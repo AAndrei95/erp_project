@@ -24,7 +24,7 @@
             order.LoadPurchaseOrders();
         }
 
-        private void comboBox1_SelectedValueChanged(object sender, EventArgs e)
+        private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
         {
             // Displaying grid view in accordance with combobox selection
             if (comboBox1.SelectedIndex == 0)
@@ -72,7 +72,7 @@
             }
             if (comboBox1.SelectedIndex == 1)
             {
-                order.ModifyCustomerOrder();
+                order.ModifyPurchaseOrder();
             }
         }
 

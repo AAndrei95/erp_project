@@ -149,7 +149,7 @@
             comboBox1.Name = "comboBox1";
             comboBox1.Size = new Size(182, 33);
             comboBox1.TabIndex = 23;
-            comboBox1.SelectedValueChanged += comboBox1_SelectedValueChanged;
+            comboBox1.SelectedIndexChanged += comboBox1_SelectedIndexChanged;
             // 
             // ClientOrderDataGrid
             // 

@@ -54,8 +54,11 @@ namespace Digital_Shop_Software
 
             MessageBox.Show("You've succesfully added a new customer into the customer list!");
 
-            Customers.customers.CustomerDataGrid.Rows.Clear();
-            LoadCustomers();
+            if (Customers.customers != null)
+            {
+                Customers.customers.CustomerDataGrid.Rows.Clear();
+                LoadCustomers();
+            }
 
             AddCustomer.addCustomer.Close();
 

@@ -121,13 +121,6 @@ namespace Digital_Shop_Software
         {
             OrderRepository orderRepository = new OrderRepository();
 
-            if (Orders.orders.ClientOrderDataGrid.SelectedRows.Count == 0)
-            {
-                MessageBox.Show("Please select a row in order to edit it!");
-
-                return;
-            }
-
             DialogResult dg_res = MessageBox.Show(
                 "Please be aware that if you modify a cell in this table the product stock won't change as well as the value of the order." +
                 "\nAre you sure you want to remove this row?",
@@ -252,13 +245,6 @@ namespace Digital_Shop_Software
         public void ModifyPurchaseOrder()
         {
             OrderRepository orderRepository = new OrderRepository();
-
-            if (Orders.orders.PurchaseOrdersDataGrid.SelectedRows.Count == 0)
-            {
-                MessageBox.Show("Please select a row in order to edit it!");
-
-                return;
-            }
 
             DialogResult dg_res = MessageBox.Show(
                 "Please be aware that if you modify a cell in this table the product stock won't change as well as the value of the order." +
