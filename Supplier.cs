@@ -1,4 +1,5 @@
 ﻿using Digital_Shop_Software.Repositories;
+using Digital_Shop_Software.Services;
 
 namespace Digital_Shop_Software
 {
@@ -7,9 +8,9 @@ namespace Digital_Shop_Software
         // Method that load suppliers in the data grid
         public void LoadSuppliers()
         {
-            SupplierRepository supplierRepository = new SupplierRepository();
+            SupplierService supplierService = new SupplierService();
 
-            List<Dictionary<string, object>> suppliers = supplierRepository.GetSuppliers();
+            List<Dictionary<string, object>> suppliers = supplierService.GetSuppliers();
 
             foreach (Dictionary<string, object> supplier in suppliers)
             {
@@ -28,9 +29,9 @@ namespace Digital_Shop_Software
         // Method that adds supplier to data grid and database
         public void AddSuppliers()
         {
-            SupplierRepository supplierRepository = new SupplierRepository();
+            SupplierService supplierService = new SupplierService();
 
-            supplierRepository.AddSupplier(
+            supplierService.AddSupplier(
                 AddSupplier.addSupplier.s_name.Text,
                 AddSupplier.addSupplier.desc.Text,
                 AddSupplier.addSupplier.email.Text,
@@ -69,7 +70,7 @@ namespace Digital_Shop_Software
         // Method that removes suppliers from the gridview and database
         public void RemoveSupplier()
         {
-            SupplierRepository supplierRepository = new SupplierRepository();
+            SupplierService supplierService = new SupplierService();
 
             if (Suppliers.suppliers.SupplierDataGrid.SelectedRows.Count > 0)
             {
@@ -82,7 +83,7 @@ namespace Digital_Shop_Software
                     {
                         int supplierId = Convert.ToInt32(item.Cells[0].Value);
 
-                        supplierRepository.RemoveSupplier(supplierId);
+                        supplierService.RemoveSupplier(supplierId);
 
                         Suppliers.suppliers.SupplierDataGrid.Rows.Remove(item);
                     }
@@ -97,7 +98,7 @@ namespace Digital_Shop_Software
         // Method that modifies gridview and database supplier table
         public void ModifySupplier()
         {
-            SupplierRepository supplierRepository = new SupplierRepository();
+            SupplierService supplierService = new SupplierService();
 
             Suppliers.suppliers.SupplierDataGrid.EndEdit();
                 
@@ -110,7 +111,7 @@ namespace Digital_Shop_Software
                 string phoneNumber = Suppliers.suppliers.SupplierDataGrid.Rows[item].Cells[4].Value?.ToString() ?? "";
                 string representative = Suppliers.suppliers.SupplierDataGrid.Rows[item].Cells[5].Value?.ToString() ?? "";
 
-                supplierRepository.ModifySupplier(
+                supplierService.ModifySupplier(
                     supplierId,
                     supplierName,
                     description,
