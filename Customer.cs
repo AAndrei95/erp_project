@@ -1,5 +1,4 @@
-﻿using Digital_Shop_Software.Repositories;
-using Digital_Shop_Software.Services;
+﻿using Digital_Shop_Software.Services;
 
 namespace Digital_Shop_Software
 {
@@ -9,9 +8,9 @@ namespace Digital_Shop_Software
         // Method that loads datagrid
         public void LoadCustomers()
         {
-            CustomerRepository customerRepository = new CustomerRepository();
+            CustomerService customerService = new CustomerService();
 
-            List<Dictionary<string, object>> customers = customerRepository.GetCustomers();
+            List<Dictionary<string, object>> customers = customerService.GetCustomers();
 
                 foreach (Dictionary<string, object> customer in customers)
                 {

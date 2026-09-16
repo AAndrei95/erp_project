@@ -13,6 +13,11 @@ namespace Digital_Shop_Software.Services
             userRepository = new UserRepository();
         }
 
+        public List<Dictionary<string, object>> GetCustomers()
+        {
+            return customerRepository.GetCustomers();
+        }
+
         public void AddCustomer(
             string email,
             string phoneNumber,

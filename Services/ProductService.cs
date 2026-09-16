@@ -13,6 +13,11 @@ namespace Digital_Shop_Software.Services
             userRepository = new UserRepository();
         }
 
+        public List<Dictionary<string, object>> GetProducts()
+        {
+            return productRepository.GetProducts();
+        }
+
         public void AddProduct(
             string name,
             string category,

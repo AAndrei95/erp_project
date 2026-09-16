@@ -1,4 +1,4 @@
-﻿using Digital_Shop_Software.Repositories;
+﻿using Digital_Shop_Software.Services;
 
 namespace Digital_Shop_Software
 {
@@ -6,12 +6,11 @@ namespace Digital_Shop_Software
     {
         // Checking Credentials methods
         int dob;
-        public string position;
         public void CheckCredentials(string username, string password)
         {
-            UserRepository userRepository = new UserRepository();
-            
-            var user = userRepository.GetUserByUsername(username);
+            UserService userService = new UserService();
+
+            var user = userService.GetUserByUsername(username);
 
             // If the username does not exist show error message and delete user input
             if (user == null || username == "")
@@ -40,12 +39,12 @@ namespace Digital_Shop_Software
                 }
         }
 
-         // Reset password methods
+        // Reset password method
         public void ResetPassUsername(string username, string sq_answer, string new_pass, string new_pass_conf)
         {
-            UserRepository userRepository = new UserRepository();
-            
-            string? db_sq_answer = userRepository.GetSecurityQuestionAnswer(username);
+            UserService userService = new UserService();
+
+            string? db_sq_answer = userService.GetSecurityQuestionAnswer(username);
             
             // If the user input does not match security question answer
             if (string.IsNullOrEmpty(db_sq_answer) || username == "")
@@ -96,8 +95,8 @@ namespace Digital_Shop_Software
             {
                 string passwordHash = PasswordHasher.HashPassword(new_pass);
 
-                UserRepository userRepository = new UserRepository();
-                userRepository.UpdatePassword(username, passwordHash);
+                UserService userService = new UserService();
+                userService.UpdatePassword(username, passwordHash);
 
                 MessageBox.Show("Your password has been changed!");
                 ResetPassword.r_pass.Close();
@@ -114,9 +113,9 @@ namespace Digital_Shop_Software
 
         public string GetPosition(string username)
         {
-            UserRepository userRepository = new UserRepository();
+            UserService userService = new UserService();
 
-            string position = userRepository.GetPosition(username) ?? "";
+            string position = userService.GetPosition(username) ?? "";
             
             LoadUsers(position);
 
@@ -126,9 +125,9 @@ namespace Digital_Shop_Software
         // Method that loads users in the grid view
         public void LoadUsers(string position)
         {
-            UserRepository userRepository = new UserRepository();
+            UserService userService = new UserService();
 
-            List<Dictionary<string, object>> users = userRepository.GetUsers();
+            List<Dictionary<string, object>> users = userService.GetUsers();
 
             foreach (Dictionary<string, object> user in users)
             {
@@ -189,9 +188,9 @@ namespace Digital_Shop_Software
         {
             string hashedPassword = PasswordHasher.HashPassword(AddUser.addUser.pass.Text);
 
-            UserRepository userRepository = new UserRepository();
+            UserService userService = new UserService();
 
-            userRepository.AddUser(
+            userService.AddUser(
                 AddUser.addUser.pos.Text,
                 AddUser.addUser.uName.Text,
                 hashedPassword,
@@ -249,7 +248,7 @@ namespace Digital_Shop_Software
         // Method that removes users from database and gridview
         public void RemoveUser()
         {
-            UserRepository userRepository = new UserRepository();
+            UserService userService = new UserService();
 
             if (Users.users.UsersDataGrid.SelectedRows.Count > 0)
             {
@@ -263,7 +262,7 @@ namespace Digital_Shop_Software
                     {
                         int id = Convert.ToInt32(Users.users.UsersDataGrid.SelectedRows[0].Cells[0].Value);
 
-                        userRepository.RemoveUser(id);
+                        userService.RemoveUser(id);
 
                         Users.users.UsersDataGrid.Rows.RemoveAt(Users.users.UsersDataGrid.SelectedRows[0].Index);
                     }
@@ -278,7 +277,7 @@ namespace Digital_Shop_Software
         // Method that allows modifying users gridview and database
         public void ModifyUser()
         {
-            UserRepository userRepository = new UserRepository();
+            UserService userService = new UserService();
 
             Users.users.UsersDataGrid.EndEdit();
             
@@ -287,7 +286,7 @@ namespace Digital_Shop_Software
                 int userId = Convert.ToInt32(Users.users.UsersDataGrid.Rows[item].Cells[0].Value);
                 string passwordHash = Users.users.UsersDataGrid.Rows[item].Cells[3].Value?.ToString() ?? "";
 
-                userRepository.ModifyUser(
+                userService.ModifyUser(
                     userId,
                     Users.users.UsersDataGrid.Rows[item].Cells[1].Value?.ToString() ?? "",
                     Users.users.UsersDataGrid.Rows[item].Cells[2].Value?.ToString() ?? "",

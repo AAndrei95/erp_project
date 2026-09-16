@@ -1,5 +1,4 @@
-﻿using Digital_Shop_Software.Repositories;
-using Digital_Shop_Software.Services;
+﻿using Digital_Shop_Software.Services;
 
 namespace Digital_Shop_Software
 {
@@ -15,9 +14,9 @@ namespace Digital_Shop_Software
         int del_date;
         public void LoadStock()
         {
-            ProductRepository productRepository = new ProductRepository();
+            ProductService productService = new ProductService();
 
-            List<Dictionary<string, object>> products = productRepository.GetProducts();
+            List<Dictionary<string, object>> products = productService.GetProducts();
 
             // Loading grid view with stock data
             foreach (Dictionary<string, object> product in products)
