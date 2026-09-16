@@ -1,4 +1,5 @@
 ﻿using Digital_Shop_Software.Repositories;
+using Digital_Shop_Software.Services;
 
 namespace Digital_Shop_Software
 {
@@ -12,7 +13,6 @@ namespace Digital_Shop_Software
         int onOrder;
         int onOrderOty;
         int del_date;
-        string supplier_id = "";
         public void LoadStock()
         {
             ProductRepository productRepository = new ProductRepository();
@@ -40,26 +40,12 @@ namespace Digital_Shop_Software
             }
         }
 
-        // Method that gets supplier id from database
-        public string GetSupplier()
-        {
-            ProductRepository productRepository = new ProductRepository();
-
-            int supplierId = productRepository.GetSupplierId(AddStock.addStock.sup_name.Text);
-
-            return supplier_id.ToString();
-        }
-
         // Method that adds products into the database and refreshes grid view
         public void AddProducts()
         {
-            UserRepository userRepository = new UserRepository();
-            ProductRepository productRepository = new ProductRepository();
+            ProductService productService = new ProductService();
 
-            int supplierId = productRepository.GetSupplierId(AddStock.addStock.sup_name.Text);
-            int userId = userRepository.GetUserId(Login.login.Username.Text);
-
-            productRepository.AddProduct(
+            productService.AddProduct(
                 AddStock.addStock.p_name.Text,
                 AddStock.addStock.category.Text,
                 AddStock.addStock.description.Text,
@@ -69,8 +55,8 @@ namespace Digital_Shop_Software
                 onOrder,
                 onOrderOty,
                 del_date,
-                supplierId,
-                userId);
+                AddStock.addStock.sup_name.Text,
+                Login.login.Username.Text);
 
             Stock.stock.StockDataGrid.Rows.Clear();
             LoadStock();
@@ -199,7 +185,7 @@ namespace Digital_Shop_Software
         // Method that removes products from the griview and database
         public void RemoveProduct()
         {
-            ProductRepository productRepository = new ProductRepository();
+            ProductService productService = new ProductService();
 
             if (Stock.stock.StockDataGrid.SelectedRows.Count > 0)
             {
@@ -212,8 +198,7 @@ namespace Digital_Shop_Software
                     {
                         int productId = Convert.ToInt32(item.Cells[0].Value);
 
-                        productRepository.RemoveProduct(productId);
-
+                        productService.RemoveProduct(productId);
                         Stock.stock.StockDataGrid.Rows.Remove(item);
                     }
                 }
@@ -227,12 +212,9 @@ namespace Digital_Shop_Software
         // Method that alows modifying the grid view cells along with database rows
         public void ModifyStock()
         {
-            UserRepository userRepository = new UserRepository();
-            ProductRepository productRepository = new ProductRepository();
+            ProductService productService = new ProductService();
 
             Stock.stock.StockDataGrid.EndEdit();
-
-            int userId = userRepository.GetUserId( Login.login.Username.Text);
 
             for (int item = 0; item < Stock.stock.StockDataGrid.Rows.Count; item++)
             {
@@ -247,7 +229,7 @@ namespace Digital_Shop_Software
                 int onOrderQty = Convert.ToInt32(Stock.stock.StockDataGrid.Rows[item].Cells[8].Value);
                 int deliveryDate = Convert.ToInt32(Stock.stock.StockDataGrid.Rows[item].Cells[9].Value);
 
-                productRepository.ModifyProduct(
+                productService.ModifyProduct(
                     productId,
                     name,
                     category,
@@ -258,7 +240,7 @@ namespace Digital_Shop_Software
                     onOrder,
                     onOrderQty,
                     deliveryDate,
-                    userId);
+                    Login.login.Username.Text);
             }
             Stock.stock.StockDataGrid.EditMode = DataGridViewEditMode.EditOnF2;
 
