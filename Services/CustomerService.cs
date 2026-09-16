@@ -36,5 +36,31 @@ namespace Digital_Shop_Software.Services
         {
             return customerRepository.GetClientIds();
         }
+
+        public void RemoveCustomer(int customerId)
+        {
+            customerRepository.RemoveCustomer(customerId);
+        }
+
+        public void ModifyCustomer(
+            int clientId,
+            string email,
+            string phoneNumber,
+            object registered,
+            object orderDate,
+            object lastOrder,
+            string username)
+        {
+            int userId = userRepository.GetUserId(username);
+
+            customerRepository.ModifyCustomer(
+                clientId,
+                email,
+                phoneNumber,
+                registered,
+                orderDate,
+                lastOrder,
+                userId);
+        }
     }
 }

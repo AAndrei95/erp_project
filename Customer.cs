@@ -107,7 +107,7 @@ namespace Digital_Shop_Software
         // Methods that removes rows from the datagrid along with rows from the database
         public void RemoveCustomer()
         {
-            CustomerRepository customerRepository = new CustomerRepository();
+            CustomerService customerService = new CustomerService();
 
             // If minimum a row is selected
             if (Customers.customers.CustomerDataGrid.SelectedRows.Count > 0)
@@ -121,10 +121,10 @@ namespace Digital_Shop_Software
                     // For each row selected in the datagrid delete the matching row in the database
                     foreach (DataGridViewRow item in Customers.customers.CustomerDataGrid.SelectedRows)
                     {
-                        int id = Convert.ToInt32(Customers.customers.CustomerDataGrid.SelectedRows[0].Cells[0].Value);
+                        int id = Convert.ToInt32(item.Cells[0].Value);
 
-                        customerRepository.RemoveCustomer(id);
-                        Customers.customers.CustomerDataGrid.Rows.RemoveAt(Customers.customers.CustomerDataGrid.SelectedRows[0].Index);
+                        customerService.RemoveCustomer(id);
+                        Customers.customers.CustomerDataGrid.Rows.Remove(item);
                     }
                 }
             }
@@ -138,8 +138,7 @@ namespace Digital_Shop_Software
         // Method that allows modifying the datagrid along with the database
         public void ModifyCustomer()
         {
-            UserRepository userRepository = new UserRepository();
-            CustomerRepository customerRepository = new CustomerRepository();
+            CustomerService customerService = new CustomerService();
 
             Customers.customers.CustomerDataGrid.EndEdit();
 
@@ -151,16 +150,15 @@ namespace Digital_Shop_Software
                 object registered = Customers.customers.CustomerDataGrid.Rows[item].Cells[3].Value ?? "";
                 object orderDate = Customers.customers.CustomerDataGrid.Rows[item].Cells[4].Value ?? "";
                 object lastOrder = Customers.customers.CustomerDataGrid.Rows[item].Cells[5].Value ?? "";
-                int userId = userRepository.GetUserId(Login.login.Username.Text);
 
-                customerRepository.ModifyCustomer(
+                customerService.ModifyCustomer(
                     clientId,
                     email,
                     phoneNumber,
                     registered,
                     orderDate,
                     lastOrder,
-                    userId);
+                    Login.login.Username.Text);
             }   
             Customers.customers.CustomerDataGrid.EditMode = DataGridViewEditMode.EditOnF2;
             
