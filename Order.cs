@@ -1,4 +1,4 @@
-﻿using Digital_Shop_Software.Repositories;
+﻿using Digital_Shop_Software.Services;
 
 namespace Digital_Shop_Software
 {
@@ -6,9 +6,9 @@ namespace Digital_Shop_Software
     {
         public void LoadClientOrders()
         {
-            OrderRepository orderRepository = new OrderRepository();
+            OrderService orderService = new OrderService();
 
-            List<Dictionary<string, object>> orders = orderRepository.GetClientOrders();
+            List<Dictionary<string, object>> orders = orderService.GetClientOrders();
 
             foreach (Dictionary<string, object> order in orders)
             {
@@ -28,9 +28,9 @@ namespace Digital_Shop_Software
 
         public void LoadPurchaseOrders()
         {
-            OrderRepository orderRepository = new OrderRepository();
+            OrderService orderService = new OrderService();
 
-            List<Dictionary<string, object>> orders = orderRepository.GetPurchaseOrders();
+            List<Dictionary<string, object>> orders = orderService.GetPurchaseOrders();
 
             // Loads purchase orders into grid view
             foreach (Dictionary<string, object> order in orders)
@@ -51,7 +51,7 @@ namespace Digital_Shop_Software
 
         public void AddCustomerOrder()
         {
-            OrderRepository orderRepository = new OrderRepository();
+            OrderService orderService = new OrderService();
 
             int orderQty = Convert.ToInt32(AddClientOrder.addClientOrder.qty.Text);
             int clientId = Convert.ToInt32(AddClientOrder.addClientOrder.clientid.Text);
@@ -59,9 +59,9 @@ namespace Digital_Shop_Software
             decimal value = Convert.ToDecimal(AddClientOrder.addClientOrder.o_val.Text);
             int lastOrder = Convert.ToInt32(AddClientOrder.addClientOrder.order_date.Value.ToShortDateString().Replace("/", ""));
 
-            orderRepository.AddCustomerOrder(orderQty, clientId, productId, value);
-            orderRepository.UpdateClientLastOrder(clientId, lastOrder);
-            orderRepository.UpdateProductQuantity(productId, AddClientOrder.addClientOrder.sold_qty);
+            orderService.AddCustomerOrder(orderQty, clientId, productId, value);
+            orderService.UpdateClientLastOrder(clientId, lastOrder);
+            orderService.UpdateProductQuantity(productId, AddClientOrder.addClientOrder.sold_qty);
 
             MessageBox.Show("You've succesfully added a new Order into the client order list!");
 
@@ -86,7 +86,7 @@ namespace Digital_Shop_Software
 
         public void RemoveCustomerOrder()
         {
-            OrderRepository orderRepository = new OrderRepository();
+            OrderService orderService = new OrderService();
 
             // If minimum a row is selected
             if (Orders.orders.ClientOrderDataGrid.SelectedRows.Count > 0)
@@ -104,7 +104,7 @@ namespace Digital_Shop_Software
                     {
                         int orderId = Convert.ToInt32(item.Cells[0].Value);
 
-                        orderRepository.RemoveCustomerOrder(orderId);
+                        orderService.RemoveCustomerOrder(orderId);
 
                         Orders.orders.ClientOrderDataGrid.Rows.Remove(item);
                     }
@@ -119,7 +119,7 @@ namespace Digital_Shop_Software
 
         public void ModifyCustomerOrder()
         {
-            OrderRepository orderRepository = new OrderRepository();
+            OrderService orderService = new OrderService();
 
             DialogResult dg_res = MessageBox.Show(
                 "Please be aware that if you modify a cell in this table the product stock won't change as well as the value of the order." +
@@ -147,7 +147,7 @@ namespace Digital_Shop_Software
                 int orderQty = Convert.ToInt32(Orders.orders.ClientOrderDataGrid.Rows[item].Cells[5].Value);
                 decimal value = Convert.ToDecimal(Orders.orders.ClientOrderDataGrid.Rows[item].Cells[6].Value);
 
-                orderRepository.ModifyCustomerOrder(orderId, orderQty, clientId, value);
+                orderService.ModifyCustomerOrder(orderId, orderQty, clientId, value);
             }
 
             Orders.orders.ClientOrderDataGrid.EditMode = DataGridViewEditMode.EditOnF2;
@@ -157,7 +157,7 @@ namespace Digital_Shop_Software
 
         public void AddPurchaseOrders()
         {
-            OrderRepository orderRepository = new OrderRepository();
+            OrderService orderService = new OrderService();
 
             int poNumber = GetPONumber();
             int poDate = Convert.ToInt32(AddPurchaseOrder.addPurchaseOrder.po_date.Value.ToShortDateString().Replace("/", ""));
@@ -166,7 +166,7 @@ namespace Digital_Shop_Software
             int productId = Convert.ToInt32(AddPurchaseOrder.addPurchaseOrder.p_code.Text);
             int tbdDate = Convert.ToInt32(AddPurchaseOrder.addPurchaseOrder.del_date.Value.ToShortDateString().Replace("/", ""));
 
-            orderRepository.AddPurchaseOrder(
+            orderService.AddPurchaseOrder(
                 poNumber,
                 poDate,
                 qty,
@@ -174,7 +174,7 @@ namespace Digital_Shop_Software
                 productId,
                 tbdDate);
 
-            orderRepository.UpdateProductStock(
+            orderService.UpdateProductStock(
                 productId,
                 AddPurchaseOrder.addPurchaseOrder.new_stock,
                 1,
@@ -204,14 +204,14 @@ namespace Digital_Shop_Software
 
         public int GetPONumber()
         {
-            OrderRepository orderRepository = new OrderRepository();
+            OrderService orderService = new OrderService();
 
-            return orderRepository.GetNextPONumber();
+            return orderService.GetNextPONumber();
         }
 
         public void RemovePurchaseOrder()
         {
-            OrderRepository orderRepository = new OrderRepository();
+            OrderService orderService = new OrderService();
 
             // If minimum a row is selected
             if (Orders.orders.PurchaseOrdersDataGrid.SelectedRows.Count > 0)
@@ -229,7 +229,7 @@ namespace Digital_Shop_Software
                     {
                         int poId = Convert.ToInt32(item.Cells[0].Value);
 
-                        orderRepository.RemovePurchaseOrder(poId);
+                        orderService.RemovePurchaseOrder(poId);
 
                         Orders.orders.PurchaseOrdersDataGrid.Rows.Remove(item);
                     }
@@ -244,7 +244,7 @@ namespace Digital_Shop_Software
 
         public void ModifyPurchaseOrder()
         {
-            OrderRepository orderRepository = new OrderRepository();
+            OrderService orderService = new OrderService();
 
             DialogResult dg_res = MessageBox.Show(
                 "Please be aware that if you modify a cell in this table the product stock won't change as well as the value of the order." +
@@ -272,7 +272,7 @@ namespace Digital_Shop_Software
                 decimal poValue = Convert.ToDecimal(Orders.orders.PurchaseOrdersDataGrid.Rows[item].Cells[6].Value);
                 int tbdDate = Convert.ToInt32(Orders.orders.PurchaseOrdersDataGrid.Rows[item].Cells[7].Value);
 
-                orderRepository.ModifyPurchaseOrder(
+                orderService.ModifyPurchaseOrder(
                     poId,
                     poDate,
                     qty,
