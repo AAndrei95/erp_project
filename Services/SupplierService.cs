@@ -1,4 +1,4 @@
-using Digital_Shop_Software.Repositories;
+using Digital_Shop_Software.Data.Repositories;
 
 namespace Digital_Shop_Software.Services
 {
@@ -14,6 +14,11 @@ namespace Digital_Shop_Software.Services
         public List<Dictionary<string, object>> GetSuppliers()
         {
             return supplierRepository.GetSuppliers();
+        }
+
+        public List<string> GetSupplierNames()
+        {
+            return supplierRepository.GetSupplierNames();
         }
 
         public void AddSupplier(

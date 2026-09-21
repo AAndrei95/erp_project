@@ -1,6 +1,7 @@
+using Digital_Shop_Software.Data;
 using System.Data.SQLite;
 
-namespace Digital_Shop_Software.Repositories
+namespace Digital_Shop_Software.Data.Repositories
 {
     internal class SupplierRepository
     {
@@ -111,6 +112,28 @@ namespace Digital_Shop_Software.Repositories
             command.Parameters.AddWithValue("@representative", representative);
 
             command.ExecuteNonQuery();
+        }
+
+        // Method to retrieve all supplier names from the database.
+        public List<string> GetSupplierNames()
+        {
+            using SQLiteConnection connection = Database.CreateConnection();
+            connection.Open();
+
+            using SQLiteCommand command = new SQLiteCommand(
+                "SELECT SupplierName FROM Supplier;",
+                connection);
+
+            using SQLiteDataReader reader = command.ExecuteReader();
+
+            var supplierNames = new List<string>();
+
+            while (reader.Read())
+            {
+                supplierNames.Add(reader["SupplierName"].ToString() ?? "");
+            }
+
+            return supplierNames;
         }
     }
 }

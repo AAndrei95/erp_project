@@ -1,6 +1,7 @@
+using Digital_Shop_Software.Data;
 using System.Data.SQLite;
 
-namespace Digital_Shop_Software.Repositories
+namespace Digital_Shop_Software.Data.Repositories
 {
     internal class OrderRepository
     {

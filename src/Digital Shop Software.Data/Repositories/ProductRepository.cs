@@ -1,6 +1,7 @@
+using Digital_Shop_Software.Data;
 using System.Data.SQLite;
 
-namespace Digital_Shop_Software.Repositories
+namespace Digital_Shop_Software.Data.Repositories
 {
     internal class ProductRepository
     {
@@ -175,6 +176,125 @@ namespace Digital_Shop_Software.Repositories
             command.Parameters.AddWithValue("@userId", userId);
 
             command.ExecuteNonQuery();
+        }
+
+        // Gets the product IDs from the database and returns them as a list of integers.  
+        public List<int> GetProductIds()
+        {
+            using SQLiteConnection connection = Database.CreateConnection();
+            connection.Open();
+
+            using SQLiteCommand command = new SQLiteCommand(
+                "SELECT ProductId FROM Product;",
+                connection);
+
+            using SQLiteDataReader reader = command.ExecuteReader();
+
+            var productIds = new List<int>();
+
+            while (reader.Read())
+            {
+                productIds.Add(Convert.ToInt32(reader["ProductId"]));
+            }
+
+            return productIds;
+        }
+
+        // Gets the product details based on the product ID from the database and returns them.  
+        public Dictionary<string, object>? GetProductById(int productId)
+        {
+            using SQLiteConnection connection = Database.CreateConnection();
+            connection.Open();
+
+            using SQLiteCommand command = new SQLiteCommand(
+                @"SELECT ProductId, Name, Category, Description, Qty, SupplierPrice, SalePrice
+                FROM Product
+                WHERE ProductId = @productId;",
+                connection);
+
+            command.Parameters.AddWithValue("@productId", productId);
+
+            using SQLiteDataReader reader = command.ExecuteReader();
+
+            if (!reader.Read())
+            {
+                return null;
+            }
+
+            return new Dictionary<string, object>
+            {
+                ["ProductId"] = reader["ProductId"],
+                ["Name"] = reader["Name"],
+                ["Category"] = reader["Category"],
+                ["Description"] = reader["Description"],
+                ["Qty"] = reader["Qty"],
+                ["SupplierPrice"] = reader["SupplierPrice"],
+                ["SalePrice"] = reader["SalePrice"]
+            };
+        }
+
+        public List<Dictionary<string, object>> GetSalesReport()
+        {
+            return GetReport(null);
+        }
+
+        public List<Dictionary<string, object>> GetTopProductsReport()
+        {
+            return GetReport("DESC");
+        }
+
+        public List<Dictionary<string, object>> GetBottomProductsReport()
+        {
+            return GetReport("ASC");
+        }
+
+        private List<Dictionary<string, object>> GetReport(string? order)
+        {
+            using SQLiteConnection connection = Database.CreateConnection();
+            connection.Open();
+
+            string query =
+                "SELECT Product.ProductId, Product.Name, Product.Category, " +
+                "SUM(Orders.\"Total Orders\") AS \"Total Orders\", " +
+                "(SUM(Orders.\"Total Orders\") * Product.SupplierPrice) AS \"Net Cost\", " +
+                "(SUM(Orders.\"Total Orders\") * Product.SalePrice) AS Sale, " +
+                "((SUM(Orders.\"Total Orders\") * Product.SalePrice) - " +
+                "(SUM(Orders.\"Total Orders\") * Product.SupplierPrice)) AS Profit " +
+                "FROM Product LEFT JOIN " +
+                "(SELECT fk_ProductId, SUM(OrderQty) AS \"Total Orders\" " +
+                "FROM \"Client Orders\" GROUP BY fk_ProductId) AS Orders " +
+                "ON Orders.fk_ProductId = Product.ProductId " +
+                "WHERE Orders.\"Total Orders\" > 0 " +
+                "GROUP BY Product.ProductId";
+
+            if (order != null)
+            {
+                query += $" ORDER BY Product.SalePrice {order} LIMIT 10";
+            }
+
+            query += ";";
+
+            using SQLiteCommand command = new SQLiteCommand(query, connection);
+
+            using SQLiteDataReader reader = command.ExecuteReader();
+
+            var report = new List<Dictionary<string, object>>();
+
+            while (reader.Read())
+            {
+                report.Add(new Dictionary<string, object>
+                {
+                    ["ProductId"] = reader["ProductId"],
+                    ["Name"] = reader["Name"],
+                    ["Category"] = reader["Category"],
+                    ["Total Orders"] = reader["Total Orders"],
+                    ["Net Cost"] = reader["Net Cost"],
+                    ["Sale"] = reader["Sale"],
+                    ["Profit"] = reader["Profit"]
+                });
+            }
+
+            return report;
         }
     }
 }

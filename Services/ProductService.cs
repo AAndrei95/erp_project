@@ -1,4 +1,4 @@
-using Digital_Shop_Software.Repositories;
+using Digital_Shop_Software.Data.Repositories;
 
 namespace Digital_Shop_Software.Services
 {
@@ -16,6 +16,31 @@ namespace Digital_Shop_Software.Services
         public List<Dictionary<string, object>> GetProducts()
         {
             return productRepository.GetProducts();
+        }
+
+        public List<int> GetProductIds()
+        {
+            return productRepository.GetProductIds();
+        }
+
+        public Dictionary<string, object>? GetProductById(int productId)
+        {
+            return productRepository.GetProductById(productId);
+        }
+
+        public List<Dictionary<string, object>> GetSalesReport()
+        {
+            return productRepository.GetSalesReport();
+        }
+
+        public List<Dictionary<string, object>> GetTopProductsReport()
+        {
+            return productRepository.GetTopProductsReport();
+        }
+
+        public List<Dictionary<string, object>> GetBottomProductsReport()
+        {
+            return productRepository.GetBottomProductsReport();
         }
 
         public void AddProduct(

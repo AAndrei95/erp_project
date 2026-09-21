@@ -1,4 +1,4 @@
-﻿using System.Data.SQLite;
+﻿using Digital_Shop_Software.Services;
 
 namespace Digital_Shop_Software
 {
@@ -19,36 +19,21 @@ namespace Digital_Shop_Software
         // Showing hint upon mouse hover whee username is inserted
         private void Hint_MouseHover(object sender, EventArgs e)
         {
-            using SQLiteConnection connection = Database.CreateConnection();
-            connection.Open();
-
             string username = Username.Text;
-            var db_username = "";
-            var sc_question = "";
-            // Creating database command and executing it
-            string db_get_username = "Select Username,SecurityQuestion from Users where Username = @username;";
 
-            SQLiteCommand command = new SQLiteCommand(db_get_username, connection);
+            UserService userService = new UserService();
 
-            command.Parameters.AddWithValue("@username", username);
-            
-            using (SQLiteDataReader reader = command.ExecuteReader())
+            string? securityQuestion = userService.GetSecurityQuestion(username);
+
+            if (username.Length == 0 || securityQuestion == null)
             {
-                //Retriving data from database
-                while (reader.Read())
-                {
-                    sc_question = reader["SecurityQuestion"].ToString();
-                    db_username = reader["Username"].ToString();
-                }
-                // Showing hint if user input matches database records
-                if (username.Length == 0 || username != db_username)
-                {
-                    toolTip.SetToolTip(Hint, "Please insert a correct username for the hint to be displayed!");
-                }
-                else
-                {
-                    toolTip.SetToolTip(Hint, sc_question);
-                }
+                toolTip.SetToolTip(
+                    Hint,
+                    "Please insert a correct username for the hint to be displayed!");
+            }
+            else
+            {
+                toolTip.SetToolTip(Hint, securityQuestion);
             }
         }
 

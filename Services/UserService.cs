@@ -1,4 +1,4 @@
-using Digital_Shop_Software.Repositories;
+using Digital_Shop_Software.Data.Repositories;
 
 namespace Digital_Shop_Software.Services
 {
@@ -29,6 +29,11 @@ namespace Digital_Shop_Software.Services
         public string? GetSecurityQuestionAnswer(string username)
         {
             return userRepository.GetSecurityQuestionAnswer(username);
+        }
+
+        public string? GetSecurityQuestion(string username)
+        {
+            return userRepository.GetSecurityQuestion(username);
         }
 
         public string? GetPosition(string username)

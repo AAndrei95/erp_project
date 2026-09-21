@@ -21,6 +21,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\src\Digital Shop Software.Core\Digital Shop Software.Core.csproj" />
+    <ProjectReference Include="..\..\src\Digital Shop Software.Data\Digital Shop Software.Data.csproj" />
   </ItemGroup>
 
 </Project>

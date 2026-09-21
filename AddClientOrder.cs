@@ -1,4 +1,4 @@
-﻿using System.Data.SQLite;
+﻿using Digital_Shop_Software.Services;
 
 namespace Digital_Shop_Software
 {
@@ -17,38 +17,22 @@ namespace Digital_Shop_Software
 
         private void AddClientOrder_Load(object sender, EventArgs e)
         {
-            using SQLiteConnection connection = Database.CreateConnection();
-            connection.Open();
+            ProductService productService = new ProductService();
+            CustomerService customerService = new CustomerService();
 
-            SQLiteCommand command = new SQLiteCommand(
-                "SELECT * FROM PRODUCT;",
-                connection);
+            List<int> productIds = productService.GetProductIds();
+            List<int> clientIds = customerService.GetClientIds();
 
-            using (SQLiteDataReader read = command.ExecuteReader())
+            foreach (int productId in productIds)
             {
-                while (read.Read())
-                {
-                    // Adding product codes in combobox
-                    p_code.Items.AddRange(new object[]
-                    {
-                        read.GetValue(read.GetOrdinal("ProductId"))
-                    });
-                }
+                p_code.Items.Add(productId);
             }
-            SQLiteCommand cmd = new SQLiteCommand(
-               "SELECT * FROM CLIENT;", connection);
 
-            using (SQLiteDataReader read = cmd.ExecuteReader())
+            foreach (int clientId in clientIds)
             {
-                while (read.Read())
-                {
-                    // Adding client codes in combobox
-                    clientid.Items.AddRange(new object[]
-                    {
-                        read.GetValue(read.GetOrdinal("clientId"))
-                    });
-                }
+                clientid.Items.Add(clientId);
             }
+
             // Setting a default value for combobox
             clientid.Text = clientid.Items[0].ToString();
         }
@@ -78,26 +62,23 @@ namespace Digital_Shop_Software
 
         private void p_code_SelectedValueChanged(object sender, EventArgs e)
         {
-            using SQLiteConnection connection = Database.CreateConnection();
-            connection.Open();
+            ProductService productService = new ProductService();
 
-            SQLiteCommand command = new SQLiteCommand(
-                "SELECT * FROM Product WHERE ProductId = @productId;",
-                connection);
+            int productId = Convert.ToInt32(p_code.Text);
 
-            command.Parameters.AddWithValue("@productId", Convert.ToInt32(p_code.Text));
-            
-            using (SQLiteDataReader read = command.ExecuteReader())
+            Dictionary<string, object>? product =
+                productService.GetProductById(productId);
+
+            if (product == null)
             {
-                while (read.Read())
-                {
-                    p_name.Text = read.GetValue(read.GetOrdinal("Name")).ToString();
-                    category.Text = read.GetValue(read.GetOrdinal("Category")).ToString();
-                    s_qty.Text = read.GetValue(read.GetOrdinal("qty")).ToString();
-                    o_val.Text = read.GetValue(read.GetOrdinal("SalePrice")).ToString();
-                    sale_price = read.GetValue(read.GetOrdinal("SalePrice")).ToString();
-                }
+                return;
             }
+
+            p_name.Text = product["Name"].ToString();
+            category.Text = product["Category"].ToString();
+            s_qty.Text = product["Qty"].ToString();
+            o_val.Text = product["SalePrice"].ToString();
+            sale_price = product["SalePrice"].ToString();
         }
 
         private void qty_TextChanged(object sender, EventArgs e)

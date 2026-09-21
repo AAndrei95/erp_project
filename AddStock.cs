@@ -1,4 +1,4 @@
-﻿using System.Data.SQLite;
+﻿using Digital_Shop_Software.Services;
 
 namespace Digital_Shop_Software
 {
@@ -12,28 +12,19 @@ namespace Digital_Shop_Software
         }
         private void AddStock_Load(object sender, EventArgs e)
         {
-            using SQLiteConnection connection = Database.CreateConnection();
-            connection.Open();
+            SupplierService supplierService = new SupplierService();
 
-            // Searching for supplier names
-            SQLiteCommand command = new SQLiteCommand(
-               "SELECT * FROM SUPPLIER;",
-               connection);
+            List<string> supplierNames = supplierService.GetSupplierNames();
                
-            using (SQLiteDataReader read = command.ExecuteReader())
+            foreach (string supplierName in supplierNames)
             {
-                while (read.Read())
-                {
-                    // Adding supplier names in combobox
-                    sup_name.Items.AddRange(new object[]
-                    {
-                        read.GetValue(read.GetOrdinal("SupplierName"))
-                    });
-                }
+                sup_name.Items.Add(supplierName);
             }
+
             // On order bool combobox
             onOrder.Items.Add(0);
             onOrder.Items.Add(1);
+
             // Setting a default value for both comboboxes
             sup_name.Text = sup_name.Items[0].ToString();
             onOrder.Text = onOrder.Items[0].ToString();

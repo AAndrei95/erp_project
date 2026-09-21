@@ -1,6 +1,7 @@
+using Digital_Shop_Software.Data;
 using System.Data.SQLite;
 
-namespace Digital_Shop_Software.Repositories
+namespace Digital_Shop_Software.Data.Repositories
 {
     internal class UserRepository
     {
@@ -70,6 +71,23 @@ namespace Digital_Shop_Software.Repositories
 
             using SQLiteCommand command = new SQLiteCommand(
                 "SELECT SQAnswer FROM Users WHERE Username = @username;",
+                connection);
+
+            command.Parameters.AddWithValue("@username", username);
+
+            object result = command.ExecuteScalar();
+
+            return result?.ToString();
+        }
+
+        // Gets the security question for a user by username.
+        public string? GetSecurityQuestion(string username)
+        {
+            using SQLiteConnection connection = Database.CreateConnection();
+            connection.Open();
+
+            using SQLiteCommand command = new SQLiteCommand(
+                "SELECT SecurityQuestion FROM Users WHERE Username = @username;",
                 connection);
 
             command.Parameters.AddWithValue("@username", username);

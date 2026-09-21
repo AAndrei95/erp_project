@@ -1,5 +1,4 @@
-﻿using Digital_Shop_Software.Repositories;
-using Digital_Shop_Software.Services;
+﻿using Digital_Shop_Software.Services;
 
 namespace Digital_Shop_Software
 {
